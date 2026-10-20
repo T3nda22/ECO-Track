@@ -1,0 +1,590 @@
+/* ==========================================================================
+   ECO TRACK: GIS-Based Waste Management System
+   Location: Poblacion, Minglanilla, Cebu, Philippines
+   Theme: Forest Green & Dark Navy Blue Professional Design System
+   UI/UX Principle: "Less reading, more doing."
+   ========================================================================== */
+
+:root {
+    --eco-primary: #157347;
+    --eco-primary-hover: #105a36;
+    --eco-primary-light: #20c997;
+    --eco-primary-bg: #e8f5e9;
+    --eco-navy: #0f172a;
+    --eco-navy-card: #1e293b;
+    --eco-navy-light: #334155;
+    --eco-accent: #22c55e;
+    
+    /* Status Colors */
+    --status-pending: #f59e0b;
+    --status-verified: #3b82f6;
+    --status-assigned: #6366f1;
+    --status-inprogress: #06b6d4;
+    --status-collected: #14b8a6;
+    --status-completed: #10b981;
+    --status-rejected: #ef4444;
+
+    /* Neutrals */
+    --eco-bg: #f8fafc;
+    --eco-card-bg: #ffffff;
+    --eco-border: #e2e8f0;
+    --eco-text-main: #1e293b;
+    --eco-text-muted: #64748b;
+}
+
+body {
+    background-color: var(--eco-bg);
+    color: var(--eco-text-main);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Navbar & Navigation
+   -------------------------------------------------------------------------- */
+.navbar-eco {
+    background-color: var(--eco-navy);
+    border-bottom: 3px solid var(--eco-primary);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.navbar-brand-eco {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ffffff !important;
+}
+
+.brand-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+.service-area-pill {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: rgba(34, 197, 94, 0.18);
+    color: #86efac;
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+    border: 1px solid rgba(134, 239, 172, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   Big Action Cards (Less Reading, More Doing)
+   -------------------------------------------------------------------------- */
+.action-hero-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 1.5rem;
+    border: 2px solid var(--eco-border);
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.action-hero-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.action-hero-card.primary {
+    background: linear-gradient(135deg, #157347 0%, #0f5132 100%);
+    color: #ffffff !important;
+    border-color: #157347;
+}
+
+.action-hero-card.secondary {
+    background: #ffffff;
+    border-color: #3b82f6;
+    color: var(--eco-text-main) !important;
+}
+
+.action-hero-card.secondary:hover {
+    border-color: #2563eb;
+}
+
+.action-hero-card.tertiary {
+    background: #ffffff;
+    border-color: #f59e0b;
+    color: var(--eco-text-main) !important;
+}
+
+.action-hero-card.tertiary:hover {
+    border-color: #d97706;
+}
+
+.action-icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.btn-big-action {
+    font-size: 1.15rem;
+    font-weight: 700;
+    padding: 0.85rem 1.75rem;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(21, 115, 71, 0.25);
+}
+
+.btn-big-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(21, 115, 71, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Category Choice Cards (Visual Grid for Reporting)
+   -------------------------------------------------------------------------- */
+.category-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.75rem;
+}
+
+.category-choice-card {
+    border: 2px solid var(--eco-border);
+    border-radius: 14px;
+    padding: 0.9rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    user-select: none;
+    position: relative;
+}
+
+.category-choice-card:hover {
+    border-color: #94a3b8;
+    background: #f8fafc;
+    transform: translateY(-2px);
+}
+
+.category-choice-card.selected {
+    border-color: #10b981;
+    background: #ecfdf5;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.category-choice-card .category-icon {
+    font-size: 2rem;
+    margin-bottom: 0.35rem;
+    display: block;
+}
+
+.category-choice-card .category-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--eco-text-main);
+}
+
+.category-choice-card.selected .category-label {
+    color: #065f46;
+}
+
+.category-choice-card .check-pill {
+    display: none;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-choice-card.selected .check-pill {
+    display: flex;
+}
+
+/* --------------------------------------------------------------------------
+   Floating Action Button (Mobile & Quick Access)
+   -------------------------------------------------------------------------- */
+.fab-report {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1040;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff !important;
+    padding: 0.9rem 1.4rem;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 1rem;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none !important;
+    transition: all 0.25s ease;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.fab-report:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 28px rgba(16, 185, 129, 0.55);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+/* --------------------------------------------------------------------------
+   Cards & Layout
+   -------------------------------------------------------------------------- */
+.eco-card {
+    background: #ffffff;
+    border: 1px solid var(--eco-border);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.eco-card:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+}
+
+.eco-stat-card {
+    border-radius: 16px;
+    border: none;
+    padding: 1.25rem;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   Status Badges
+   -------------------------------------------------------------------------- */
+.badge-status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.badge-status-verified {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+.badge-status-assigned {
+    background-color: #e0e7ff;
+    color: #3730a3;
+    border: 1px solid #c7d2fe;
+}
+
+.badge-status-inprogress {
+    background-color: #cffafe;
+    color: #155e75;
+    border: 1px solid #67e8f9;
+}
+
+.badge-status-collected {
+    background-color: #ccfbf1;
+    color: #115e59;
+    border: 1px solid #5eead4;
+}
+
+.badge-status-completed {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.badge-status-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.badge-eco {
+    font-weight: 700;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* --------------------------------------------------------------------------
+   GIS Map Styling
+   -------------------------------------------------------------------------- */
+.eco-map-container {
+    width: 100%;
+    height: 520px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2px solid var(--eco-border);
+    position: relative;
+    background: #e2e8f0;
+}
+
+.eco-map-container.map-sm {
+    height: 360px;
+}
+
+.eco-map-container.map-lg {
+    height: 650px;
+}
+
+/* Map legend control */
+.map-legend-box {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--eco-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 240px;
+}
+
+.map-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.coordinate-preview-box {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.2s ease;
+}
+
+.coordinate-preview-box.valid {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+
+.coordinate-preview-box.invalid {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
+/* Photo Upload Dropzone */
+.upload-dropzone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: center;
+    background: #f8fafc;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-dropzone:hover {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+/* --------------------------------------------------------------------------
+   Visual Horizontal Stepper (For Report Tracking)
+   -------------------------------------------------------------------------- */
+.horizontal-stepper {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 2rem 0;
+}
+
+.horizontal-stepper::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    height: 4px;
+    background: #e2e8f0;
+    z-index: 1;
+}
+
+.stepper-step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+}
+
+.stepper-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0 auto 0.5rem;
+    color: #94a3b8;
+    transition: all 0.3s ease;
+}
+
+.stepper-step.active .stepper-circle {
+    border-color: var(--status-inprogress);
+    background: var(--status-inprogress);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.2);
+}
+
+.stepper-step.completed .stepper-circle {
+    border-color: #10b981;
+    background: #10b981;
+    color: white;
+}
+
+.stepper-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.stepper-step.active .stepper-label,
+.stepper-step.completed .stepper-label {
+    color: var(--eco-text-main);
+}
+
+/* --------------------------------------------------------------------------
+   Audit Trail & Timeline
+   -------------------------------------------------------------------------- */
+.eco-timeline {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-top: 1rem;
+}
+
+.eco-timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: #e2e8f0;
+}
+
+.timeline-step {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.timeline-step:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-step-dot {
+    position: absolute;
+    left: -1.75rem;
+    top: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid var(--eco-primary);
+    box-shadow: 0 0 0 2px rgba(21, 115, 71, 0.2);
+}
+
+.timeline-step.completed .timeline-step-dot {
+    background: var(--eco-primary);
+}
+
+.timeline-step.rejected .timeline-step-dot {
+    border-color: var(--status-rejected);
+    background: var(--status-rejected);
+}
+
+/* --------------------------------------------------------------------------
+   Academic & Capstone Disclaimer
+   -------------------------------------------------------------------------- */
+.capstone-disclaimer-banner {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    color: #1e3a8a;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+}
+
+.footer-eco {
+    background-color: var(--eco-navy);
+    color: #94a3b8;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.85rem;
+    padding: 2rem 0;
+}
+
+.footer-eco a {
+    color: #38bdf8;
+    text-decoration: none;
+}
+
+.footer-eco a:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Quick Demo Switcher
+   -------------------------------------------------------------------------- */
+.demo-role-pill {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.demo-role-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

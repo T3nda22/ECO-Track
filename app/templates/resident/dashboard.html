@@ -1,0 +1,201 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Resident Dashboard - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Top Welcome Banner with Huge "Report Full Bin" Button -->
+    <div class="col-12">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #157347 100%);">
+            <div>
+                <div class="badge bg-success-subtle text-success border border-success-subtle mb-1">
+                    <i class="bi bi-person-fill me-1"></i> Resident Portal
+                </div>
+                <h1 class="h3 fw-bold mb-1">Hello, {{ current_user.full_name }}!</h1>
+                <p class="text-white-50 mb-0 small">
+                    <i class="bi bi-geo-alt-fill text-success me-1"></i> <strong>Barangay Poblacion, Minglanilla, Cebu</strong>
+                </p>
+            </div>
+            <div>
+                <a href="{{ url_for('resident.new_report') }}" class="btn btn-warning btn-lg text-dark fw-bold px-4 py-3 fs-5 shadow d-flex align-items-center gap-2">
+                    <i class="bi bi-trash3-fill fs-4"></i>
+                    <span>Report Full Bin</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3 Big Action Shortcut Cards (Less reading, more doing) -->
+    <div class="col-md-4">
+        <a href="{{ url_for('resident.new_report') }}" class="action-hero-card primary text-center p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="brand-icon bg-white text-success fs-4" style="width: 50px; height: 50px; border-radius: 14px;">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <div class="text-start">
+                    <div class="h5 fw-bold text-white mb-0">Report Full Bin</div>
+                    <div class="small text-white-50">Drop a pin on the map</div>
+                </div>
+                <div class="ms-auto text-white fs-4">
+                    <i class="bi bi-arrow-right-circle-fill"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.index') }}#poblacionMapSection" class="action-hero-card secondary text-center p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="brand-icon bg-primary text-white fs-4" style="width: 50px; height: 50px; border-radius: 14px;">
+                    <i class="bi bi-map-fill"></i>
+                </div>
+                <div class="text-start">
+                    <div class="h5 fw-bold text-dark mb-0">View Waste Map</div>
+                    <div class="small text-muted">See uncollected spots</div>
+                </div>
+                <div class="ms-auto text-primary fs-4">
+                    <i class="bi bi-arrow-right-circle-fill"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('resident.my_reports') }}" class="action-hero-card tertiary text-center p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="brand-icon bg-warning text-dark fs-4" style="width: 50px; height: 50px; border-radius: 14px;">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="text-start">
+                    <div class="h5 fw-bold text-dark mb-0">Track My Reports</div>
+                    <div class="small text-muted">Check cleanup progress</div>
+                </div>
+                <div class="ms-auto text-warning fs-4">
+                    <i class="bi bi-arrow-right-circle-fill"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- 4 Visual KPI Cards -->
+    <div class="col-md-3 col-6">
+        <div class="eco-card p-3 d-flex align-items-center gap-3">
+            <div class="fs-2 text-primary">📝</div>
+            <div>
+                <div class="h3 fw-bold mb-0 text-dark">{{ total_submitted }}</div>
+                <div class="small text-muted fw-semibold">Total Reports</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="eco-card p-3 border-start border-4 border-warning d-flex align-items-center gap-3">
+            <div class="fs-2 text-warning">⏳</div>
+            <div>
+                <div class="h3 fw-bold mb-0 text-warning">{{ pending_count }}</div>
+                <div class="small text-muted fw-semibold">Pending Review</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="eco-card p-3 border-start border-4 border-info d-flex align-items-center gap-3">
+            <div class="fs-2 text-info">🚛</div>
+            <div>
+                <div class="h3 fw-bold mb-0 text-info">{{ in_progress_count }}</div>
+                <div class="small text-muted fw-semibold">In Progress</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="eco-card p-3 border-start border-4 border-success d-flex align-items-center gap-3">
+            <div class="fs-2 text-success">✅</div>
+            <div>
+                <div class="h3 fw-bold mb-0 text-success">{{ completed_count }}</div>
+                <div class="small text-muted fw-semibold">Cleared & Completed</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Reports Section -->
+    <div class="col-lg-8">
+        <div class="eco-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h5 fw-bold mb-0"><i class="bi bi-journal-check text-success me-2"></i>My Recent Reports</h2>
+                <a href="{{ url_for('resident.my_reports') }}" class="btn btn-sm btn-outline-secondary">View All</a>
+            </div>
+
+            {% if reports %}
+                <div class="list-group list-group-flush">
+                    {% for r in reports %}
+                    <div class="list-group-item px-0 py-3 border-bottom">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <span class="badge {{ r.current_status|status_badge_class }} mb-1">
+                                    {{ r.current_status }}
+                                </span>
+                                <h3 class="h6 fw-bold mb-1 text-dark">{{ r.title }}</h3>
+                                <div class="small text-muted">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ r.location_description }}
+                                    &bull; <span class="font-monospace text-primary">{{ r.tracking_code }}</span>
+                                    &bull; {{ r.submission_timestamp|format_datetime }}
+                                </div>
+                            </div>
+                            <div>
+                                <a href="{{ url_for('resident.track_report', report_id=r.id) }}" class="btn btn-sm btn-outline-success fw-bold px-3">
+                                    <i class="bi bi-search me-1"></i>Track Status
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5 text-muted">
+                    <div class="fs-1 mb-2">🗑️</div>
+                    <h3 class="h5 fw-bold text-dark">No reports yet</h3>
+                    <p class="small text-muted mb-3">See an overflowing or full garbage bin in Poblacion? Report it now.</p>
+                    <a href="{{ url_for('resident.new_report') }}" class="btn btn-success fw-bold px-4 py-2">
+                        <i class="bi bi-plus-circle-fill me-1"></i>Report Full Bin Now
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right: Quick Collection Schedule & Notifications -->
+    <div class="col-lg-4">
+        <!-- Collection Days Widget -->
+        <div class="eco-card p-4 mb-4">
+            <h3 class="h6 fw-bold mb-3 text-dark">
+                <i class="bi bi-calendar-event text-success me-2"></i>Poblacion Collection Days
+            </h3>
+            <div class="list-group list-group-flush small">
+                {% for s in schedules[:4] %}
+                <div class="list-group-item px-0 py-2">
+                    <div class="fw-bold text-dark">{{ s.service_area }}</div>
+                    <div class="text-success fw-semibold"><i class="bi bi-clock me-1"></i>{{ s.collection_day }} ({{ s.collection_time }})</div>
+                </div>
+                {% endfor %}
+            </div>
+            <a href="{{ url_for('resident.schedules') }}" class="btn btn-sm btn-outline-secondary w-100 mt-2">View Full Schedule</a>
+        </div>
+
+        <!-- Recent Alerts -->
+        <div class="eco-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-bell-fill text-primary me-2"></i>Recent Alerts</h3>
+                <a href="{{ url_for('resident.notifications') }}" class="small text-decoration-none">View All</a>
+            </div>
+            <div class="list-group list-group-flush small">
+                {% for n in notifications[:3] %}
+                <div class="list-group-item px-0 py-2">
+                    <div class="fw-bold text-dark">{{ n.title }}</div>
+                    <div class="text-muted">{{ n.notification_message }}</div>
+                </div>
+                {% else %}
+                <div class="text-muted text-center py-3">No new alerts.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

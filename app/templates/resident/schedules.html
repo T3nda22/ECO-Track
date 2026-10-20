@@ -1,0 +1,47 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Collection Schedules - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="eco-card p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 border-bottom pb-3">
+                <div>
+                    <h1 class="h4 fw-bold mb-1"><i class="bi bi-calendar3 text-success me-2"></i>Weekly Garbage Collection Schedules</h1>
+                    <p class="text-muted small mb-0">Designated garbage truck collection routes and days for <strong>Barangay Poblacion (Wards 1–4), Minglanilla, Cebu</strong>.</p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Zone / Ward Area in Poblacion</th>
+                            <th>Collection Days</th>
+                            <th>Time Window</th>
+                            <th>Waste Stream</th>
+                            <th>Operating Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in schedules %}
+                        <tr>
+                            <td class="fw-bold text-dark"><i class="bi bi-geo-alt-fill text-danger me-2"></i>{{ s.service_area }}</td>
+                            <td><span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ s.collection_day }}</span></td>
+                            <td><span class="badge bg-light text-dark border"><i class="bi bi-clock me-1"></i>{{ s.collection_time }}</span></td>
+                            <td><span class="badge bg-success-subtle text-success">{{ s.waste_type }}</span></td>
+                            <td class="small text-muted">{{ s.schedule_notes or 'Standard collection' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No schedules available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

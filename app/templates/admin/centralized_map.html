@@ -1,0 +1,86 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Centralized Operations GIS Map - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+    <!-- Map Control & Filter Toolbar -->
+    <div class="col-12">
+        <div class="eco-card p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <h1 class="h5 fw-bold mb-0">
+                        <i class="bi bi-map-fill text-danger me-2"></i>Centralized GIS Operations Map
+                    </h1>
+                    <div class="small text-muted">
+                        Visualizing municipal waste collection pins exclusively in <strong>Barangay Poblacion (Wards 1–4), Minglanilla, Cebu</strong>.
+                    </div>
+                </div>
+
+                <!-- Live Filters -->
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div>
+                        <select id="mapStatusFilter" class="form-select form-select-sm" style="min-width: 150px;">
+                            <option value="all">All Statuses</option>
+                            <option value="Pending">Pending Review</option>
+                            <option value="Verified">Verified</option>
+                            <option value="Assigned">Assigned</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Collected">Collected</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="mapCategoryFilter" class="form-select form-select-sm" style="min-width: 170px;">
+                            <option value="all">All Waste Categories</option>
+                            {% for c in categories %}
+                                <option value="{{ c }}">{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="button" id="btnResetFilters" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Centralized Leaflet Map Canvas -->
+    <div class="col-12">
+        <div class="eco-card p-2">
+            <div id="fullCentralizedMap" class="eco-map-container map-lg"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const statusSelect = document.getElementById('mapStatusFilter');
+        const categorySelect = document.getElementById('mapCategoryFilter');
+        const resetBtn = document.getElementById('btnResetFilters');
+
+        const reportsMap = EcoGIS.initReportsMap('fullCentralizedMap', {
+            initialStatus: statusSelect.value,
+            initialCategory: categorySelect.value,
+            role: 'admin'
+        });
+
+        function applyFilters() {
+            reportsMap.loadReports(statusSelect.value, categorySelect.value);
+        }
+
+        statusSelect.addEventListener('change', applyFilters);
+        categorySelect.addEventListener('change', applyFilters);
+
+        resetBtn.addEventListener('click', function () {
+            statusSelect.value = 'all';
+            categorySelect.value = 'all';
+            applyFilters();
+        });
+    });
+</script>
+{% endblock %}

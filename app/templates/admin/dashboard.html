@@ -1,0 +1,212 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Administrator Operations Dashboard - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Header -->
+    <div class="col-12">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #991b1b 100%);">
+            <div>
+                <div class="badge bg-danger-subtle text-danger border border-danger-subtle mb-2">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Municipal Waste Operations Control
+                </div>
+                <h1 class="h3 fw-bold mb-1">Administrator Dashboard</h1>
+                <p class="text-white-50 mb-0 small">
+                    <i class="bi bi-geo-alt-fill text-success me-1"></i> Exclusively Serving: <strong>Barangay Poblacion, Minglanilla, Cebu</strong>
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('admin.centralized_map') }}" class="btn btn-info fw-bold shadow-sm">
+                    <i class="bi bi-map-fill me-1"></i>Full Centralized Map
+                </a>
+                <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-light fw-bold">
+                    <i class="bi bi-card-checklist me-1"></i>Manage Reports
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8 Workflow KPI Metric Cards -->
+    <div class="col-lg-3 col-sm-6">
+        <div class="eco-card p-3 border-start border-4 border-primary">
+            <div class="text-muted small fw-semibold">TOTAL REPORTS</div>
+            <div class="h3 fw-bold mb-0 text-dark">{{ total_reports }}</div>
+            <div class="small text-muted">All Poblacion submissions</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <div class="eco-card p-3 border-start border-4 border-warning">
+            <div class="text-muted small fw-semibold">PENDING REVIEW</div>
+            <div class="h3 fw-bold mb-0 text-warning">{{ pending_count }}</div>
+            <div class="small text-muted">Require admin verification</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <div class="eco-card p-3 border-start border-4 border-info">
+            <div class="text-muted small fw-semibold">VERIFIED & ASSIGNED</div>
+            <div class="h3 fw-bold mb-0 text-info">{{ verified_count + assigned_count }}</div>
+            <div class="small text-muted">Ready for / in dispatch</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <div class="eco-card p-3 border-start border-4 border-cyan" style="border-left-color: #06b6d4 !important;">
+            <div class="text-muted small fw-semibold">IN PROGRESS</div>
+            <div class="h3 fw-bold mb-0" style="color: #0891b2;">{{ in_progress_count }}</div>
+            <div class="small text-muted">Active field collection</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <div class="eco-card p-3 border-start border-4" style="border-left-color: #14b8a6 !important;">
+            <div class="text-muted small fw-semibold">COLLECTED (AWAITING CONFIRMATION)</div>
+            <div class="h3 fw-bold mb-0" style="color: #0d9488;">{{ collected_count }}</div>
+            <div class="small text-muted">Proof uploaded by collector</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <div class="eco-card p-3 border-start border-4 border-success">
+            <div class="text-muted small fw-semibold">COMPLETED</div>
+            <div class="h3 fw-bold mb-0 text-success">{{ completed_count }}</div>
+            <div class="small text-muted">Confirmed cleared</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <div class="eco-card p-3 border-start border-4 border-danger">
+            <div class="text-muted small fw-semibold">REJECTED</div>
+            <div class="h3 fw-bold mb-0 text-danger">{{ rejected_count }}</div>
+            <div class="small text-muted">Out-of-scope or duplicate</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <div class="eco-card p-3 border-start border-4 border-secondary">
+            <div class="text-muted small fw-semibold">ACTIVE PERSONNEL</div>
+            <div class="h3 fw-bold mb-0 text-dark">{{ personnel_users|length }}</div>
+            <div class="small text-muted">Authorized collection staff</div>
+        </div>
+    </div>
+
+    <!-- Centralized GIS Operations Map -->
+    <div class="col-12">
+        <div class="eco-card p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <div>
+                    <h2 class="h5 fw-bold mb-1">
+                        <i class="bi bi-map-fill text-danger me-2"></i>Poblacion Centralized GIS Operations Map
+                    </h2>
+                    <p class="text-muted small mb-0">
+                        Interactive map displaying all active and completed waste pins in <strong>Barangay Poblacion, Minglanilla</strong> with status-coded markers.
+                    </p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{{ url_for('admin.centralized_map') }}" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-arrows-fullscreen me-1"></i>Open Full Map with Filters
+                    </a>
+                </div>
+            </div>
+
+            <!-- Leaflet Container -->
+            <div id="adminDashboardMap" class="eco-map-container" style="height: 480px;"></div>
+        </div>
+    </div>
+
+    <!-- Two Critical Workflow Tables: Pending Review & Collected Awaiting Confirmation -->
+    <div class="col-lg-6">
+        <div class="eco-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                <h3 class="h6 fw-bold mb-0 text-warning">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i> Pending Reports Awaiting Verification ({{ pending_count }})
+                </h3>
+                <a href="{{ url_for('admin.reports', status='Pending') }}" class="small text-decoration-none">View All</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Code</th>
+                            <th>Problem & Location</th>
+                            <th>Resident</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in pending_reports %}
+                        <tr>
+                            <td class="fw-bold font-monospace text-primary">{{ r.tracking_code }}</td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ r.title }}</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">{{ r.location_description }}</div>
+                            </td>
+                            <td>{{ r.resident.full_name }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.report_detail', report_id=r.id) }}" class="btn btn-xs btn-outline-danger py-1 px-2">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">No pending reports awaiting review.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="eco-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                <h3 class="h6 fw-bold mb-0 text-teal" style="color: #0d9488;">
+                    <i class="bi bi-camera-fill me-1"></i> Collected Tasks Awaiting Admin Confirmation ({{ collected_count }})
+                </h3>
+                <a href="{{ url_for('admin.reports', status='Collected') }}" class="small text-decoration-none">View All</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Code</th>
+                            <th>Location</th>
+                            <th>Personnel</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in collected_awaiting_confirmation %}
+                        <tr>
+                            <td class="fw-bold font-monospace text-primary">{{ r.tracking_code }}</td>
+                            <td>{{ r.location_description }}</td>
+                            <td>{{ r.task_assignment.personnel.full_name if r.task_assignment else 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.report_detail', report_id=r.id) }}" class="btn btn-xs btn-success py-1 px-2 fw-semibold">
+                                    <i class="bi bi-check2-circle me-1"></i>Verify Proof
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">No collections awaiting completion confirmation.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize centralized admin map
+        EcoGIS.initReportsMap('adminDashboardMap', {
+            initialStatus: 'all',
+            role: 'admin'
+        });
+    });
+</script>
+{% endblock %}

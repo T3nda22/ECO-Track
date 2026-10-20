@@ -1,0 +1,103 @@
+{% extends "shared/base.html" %}
+
+{% block title %}About ECO TRACK - BSIT Capstone Project | Poblacion, Minglanilla, Cebu{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="eco-card p-4 mb-4">
+            <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);">
+                <i class="bi bi-mortarboard-fill text-success"></i>
+                <span class="small fw-bold text-success text-uppercase">Academic BSIT Capstone Project</span>
+            </div>
+            <h2 class="h3 fw-bold mb-3">ECO TRACK: GIS-Based Waste Management System</h2>
+            <h3 class="h6 text-muted mb-4">Exclusively Serving Barangay Poblacion, Minglanilla, Cebu, Philippines</h3>
+
+            <p>
+                <strong>ECO TRACK</strong> is an academic Bachelor of Science in Information Technology (BSIT) capstone project developed to modernize and enhance municipal solid waste reporting and collection coordination in <strong>Barangay Poblacion, Minglanilla, Cebu</strong>.
+            </p>
+            <p>
+                The system integrates interactive Geographic Information System (GIS) mapping to bridge communication between local residents, municipal waste managers, and field garbage collection crews. Residents can pinpoint the exact geographic location of overflowing, stacked, or uncollected garbage bins, while administrators can review, verify, and dispatch tasks to personnel with full audit logging and proof-of-collection confirmation.
+            </p>
+
+            <h4 class="h5 fw-bold mt-4 mb-3 border-bottom pb-2">Geographical Service Boundary Specification</h4>
+            <div class="alert alert-secondary py-2 small mb-3">
+                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                <strong>Service Area Scope:</strong> The application exclusively operates within the perimeter of <strong>Barangay Poblacion (covering Wards 1, 2, 3, and 4)</strong> in Minglanilla, Cebu.
+            </div>
+            <p class="small text-muted">
+                In strict adherence to the project specification:
+                <em>"Use a verified geographical boundary for Poblacion, Minglanilla, when reliable boundary data is available. Do not invent geographic boundaries. If verified boundary data is unavailable, label the service area as approximate until verified. Validate submitted coordinates against the defined service area on the server, not only in the browser."</em>
+            </p>
+            <p class="small text-muted">
+                The service boundary demarcated on the interactive map encompasses the central administrative, commercial, and coastal sectors of Poblacion, Minglanilla, bounded by the Bohol Strait to the east, Tulay to the north, and Calajo-an to the south. Coordinates submitted outside this polygon are automatically rejected by server-side validation.
+            </p>
+
+            <h4 class="h5 fw-bold mt-4 mb-3 border-bottom pb-2">Key Administrative Landmarks in Poblacion</h4>
+            <div class="row g-2">
+                {% for lm in landmarks %}
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light small">
+                        <strong><i class="bi bi-geo-fill text-success me-1"></i>{{ lm.name }}</strong>
+                        <div class="text-muted" style="font-size: 0.75rem;">Zone: {{ lm.zone }} | Lat: {{ lm.lat }}, Lng: {{ lm.lng }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="eco-card p-4">
+            <h4 class="h5 fw-bold mb-3 border-bottom pb-2">Technology Stack Architecture</h4>
+            <div class="row g-3 small">
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-dark"><i class="bi bi-code-square text-primary me-1"></i>Backend</h6>
+                    <ul class="list-unstyled text-muted ps-2">
+                        <li><strong>Language:</strong> Python 3</li>
+                        <li><strong>Web Framework:</strong> Flask</li>
+                        <li><strong>Authentication:</strong> Flask-Login (session-based)</li>
+                        <li><strong>ORM:</strong> Flask-SQLAlchemy (MySQL & SQLite)</li>
+                        <li><strong>Forms & CSRF:</strong> Flask-WTF</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-dark"><i class="bi bi-display text-success me-1"></i>Frontend & GIS</h6>
+                    <ul class="list-unstyled text-muted ps-2">
+                        <li><strong>Styling:</strong> Bootstrap 5 & Custom CSS</li>
+                        <li><strong>GIS Mapping:</strong> Leaflet.js</li>
+                        <li><strong>Tile Provider:</strong> OpenStreetMap</li>
+                        <li><strong>Spatial Validation:</strong> Ray-casting Point-in-Polygon</li>
+                        <li><strong>Icons:</strong> Bootstrap Icons</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="eco-card p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-shield-exclamation text-warning me-2"></i>Capstone Project Disclaimers</h5>
+            <ul class="small text-muted ps-3 mb-3">
+                <li class="mb-2"><strong>Academic Demonstration:</strong> This system is an academic BSIT capstone project and is not currently deployed as the official software of the Municipality of Minglanilla or Barangay Poblacion.</li>
+                <li class="mb-2"><strong>Realistic Sample Data:</strong> Operational reports and user accounts shown for demonstration purposes represent realistic local scenarios within Poblacion, Minglanilla.</li>
+                <li class="mb-2"><strong>No GPS Truck Tracking Claim:</strong> In accordance with technical integrity guidelines, real garbage trucks are not claimed to be GPS-tracked. The map pins represent manually pinpointed waste problem coordinates.</li>
+            </ul>
+        </div>
+
+        <div class="eco-card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-person-badge text-primary me-2"></i>User Roles</h5>
+            <div class="mb-3 pb-2 border-bottom">
+                <span class="badge bg-success">Role A: Resident</span>
+                <p class="small text-muted mt-1 mb-0">Submits waste reports with map pins, tracks collection timeline, receives notifications.</p>
+            </div>
+            <div class="mb-3 pb-2 border-bottom">
+                <span class="badge bg-danger">Role B: Administrator</span>
+                <p class="small text-muted mt-1 mb-0">Verifies reports, assigns tasks to personnel, manages schedules, confirms completion.</p>
+            </div>
+            <div>
+                <span class="badge bg-warning text-dark">Role C: Collection Personnel</span>
+                <p class="small text-muted mt-1 mb-0">Views assigned task queue, updates progress, uploads clearance proof photos.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

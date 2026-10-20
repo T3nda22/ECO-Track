@@ -1,0 +1,119 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Manage Collection Schedules - Admin | ECO TRACK{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Left: Add New Collection Schedule Form -->
+    <div class="col-lg-4">
+        <div class="eco-card p-4">
+            <h2 class="h5 fw-bold mb-3 border-bottom pb-2">
+                <i class="bi bi-calendar-plus text-success me-2"></i>Add Poblacion Schedule
+            </h2>
+            <p class="text-muted small mb-3">
+                Create or update weekly garbage truck collection windows for specific wards and zones in Barangay Poblacion, Minglanilla.
+            </p>
+
+            <form method="POST" action="{{ url_for('admin.schedules') }}" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="service_area">{{ form.service_area.label.text }}</label>
+                    {{ form.service_area(class="form-control form-control-sm" + (" is-invalid" if form.service_area.errors else ""), placeholder="e.g. Poblacion Ward 1 (Coastal & Caballero)", id="service_area") }}
+                    {% for error in form.service_area.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="collection_day">{{ form.collection_day.label.text }}</label>
+                    {{ form.collection_day(class="form-control form-control-sm" + (" is-invalid" if form.collection_day.errors else ""), placeholder="e.g. Monday, Thursday", id="collection_day") }}
+                    {% for error in form.collection_day.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="collection_time">{{ form.collection_time.label.text }}</label>
+                    {{ form.collection_time(class="form-control form-control-sm" + (" is-invalid" if form.collection_time.errors else ""), placeholder="e.g. 06:00 AM - 09:00 AM", id="collection_time") }}
+                    {% for error in form.collection_time.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="waste_type">{{ form.waste_type.label.text }}</label>
+                    {{ form.waste_type(class="form-control form-control-sm" + (" is-invalid" if form.waste_type.errors else ""), placeholder="e.g. Biodegradable & Residual", id="waste_type") }}
+                    {% for error in form.waste_type.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold" for="schedule_notes">{{ form.schedule_notes.label.text }}</label>
+                    {{ form.schedule_notes(class="form-control form-control-sm" + (" is-invalid" if form.schedule_notes.errors else ""), rows=2, placeholder="e.g. Street collection along Bacalso Ave and secondary roads", id="schedule_notes") }}
+                    {% for error in form.schedule_notes.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 fw-bold shadow-sm">
+                    <i class="bi bi-save me-1"></i> Save Collection Schedule
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Right: Current Poblacion Schedules Table -->
+    <div class="col-lg-8">
+        <div class="eco-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+                <div>
+                    <h1 class="h5 fw-bold mb-0"><i class="bi bi-calendar-week text-primary me-2"></i>Active Poblacion Collection Schedules</h1>
+                    <div class="text-muted small">Publicly visible to residents of Barangay Poblacion.</div>
+                </div>
+                <span class="badge bg-secondary">{{ schedules|length }} Zones Scheduled</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Zone / Ward Area</th>
+                            <th>Collection Day</th>
+                            <th>Time Window</th>
+                            <th>Waste Stream</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in schedules %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">{{ s.service_area }}</div>
+                                <div class="small text-muted">{{ s.schedule_notes or 'Standard route' }}</div>
+                            </td>
+                            <td><span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ s.collection_day }}</span></td>
+                            <td><span class="badge bg-light text-dark border">{{ s.collection_time }}</span></td>
+                            <td><span class="badge bg-success-subtle text-success">{{ s.waste_type }}</span></td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_schedule', schedule_id=s.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-xs btn-outline-danger py-0 px-2" style="font-size: 0.72rem;" onclick="return confirm('Delete this schedule entry?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No collection schedules configured.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

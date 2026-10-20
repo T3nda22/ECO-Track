@@ -1,0 +1,126 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Manage Waste Reports - Admin | ECO TRACK{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="eco-card p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 border-bottom pb-3 gap-2">
+                <div>
+                    <h1 class="h4 fw-bold mb-1"><i class="bi bi-card-checklist text-danger me-2"></i>Master Waste Reports Management</h1>
+                    <p class="text-muted small mb-0">Search, filter, and review all waste reports in Barangay Poblacion, Minglanilla.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-secondary px-3 py-2 fs-6">{{ reports|length }} Reports Found</span>
+                </div>
+            </div>
+
+            <!-- Filter and Search Form -->
+            <form method="GET" action="{{ url_for('admin.reports') }}" class="row g-2 mb-4 bg-light p-3 rounded-3 border">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Filter by Status</label>
+                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending Review</option>
+                        <option value="Verified" {% if selected_status == 'Verified' %}selected{% endif %}>Verified</option>
+                        <option value="Assigned" {% if selected_status == 'Assigned' %}selected{% endif %}>Assigned</option>
+                        <option value="In Progress" {% if selected_status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                        <option value="Collected" {% if selected_status == 'Collected' %}selected{% endif %}>Collected</option>
+                        <option value="Completed" {% if selected_status == 'Completed' %}selected{% endif %}>Completed</option>
+                        <option value="Rejected" {% if selected_status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Filter by Category</label>
+                    <select name="category" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">All Problem Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Assigned Personnel</label>
+                    <select name="personnel_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">All Personnel</option>
+                        {% for p in personnel_list %}
+                            <option value="{{ p.id }}" {% if selected_personnel == (p.id|string) %}selected{% endif %}>{{ p.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Search Keywords</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="search" class="form-control" placeholder="Code, title, or street..." value="{{ search_query }}">
+                        <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Master Table -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tracking ID</th>
+                            <th>Problem & Category</th>
+                            <th>Poblacion Location</th>
+                            <th>Resident</th>
+                            <th>Personnel / Priority</th>
+                            <th>Submitted</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in reports %}
+                        <tr>
+                            <td class="fw-bold font-monospace text-primary">{{ r.tracking_code }}</td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ r.title }}</div>
+                                <span class="badge bg-secondary" style="font-size: 0.7rem;">{{ r.waste_category }}</span>
+                            </td>
+                            <td>
+                                <div class="small"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ r.location_description }}</div>
+                                <div class="text-muted font-monospace" style="font-size: 0.72rem;">{{ r.latitude }}, {{ r.longitude }}</div>
+                            </td>
+                            <td class="small">{{ r.resident.full_name }}</td>
+                            <td class="small">
+                                {% if r.task_assignment and r.task_assignment.personnel %}
+                                    <div class="fw-semibold text-dark">{{ r.task_assignment.personnel.full_name }}</div>
+                                    <span class="badge {{ r.task_assignment.get_priority_badge() }}" style="font-size: 0.68rem;">{{ r.task_assignment.priority }}</span>
+                                {% else %}
+                                    <span class="text-muted">Unassigned</span>
+                                {% endif %}
+                            </td>
+                            <td class="small text-muted">{{ r.submission_timestamp|format_datetime }}</td>
+                            <td>
+                                <span class="badge {{ r.current_status|status_badge_class }}">
+                                    {{ r.current_status }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('admin.report_detail', report_id=r.id) }}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-gear-fill me-1"></i>Manage
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-card-heading fs-2 d-block mb-2 text-muted"></i>
+                                No waste reports matching these filter criteria.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

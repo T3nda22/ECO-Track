@@ -1,0 +1,143 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Collection Personnel Dashboard - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Header -->
+    <div class="col-12">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #b45309 100%);">
+            <div>
+                <div class="badge bg-warning text-dark mb-2">
+                    <i class="bi bi-truck me-1"></i> Field Operations Portal
+                </div>
+                <h1 class="h3 fw-bold mb-1">Collector Dashboard: {{ current_user.full_name }}</h1>
+                <p class="text-white-50 mb-0 small">
+                    <i class="bi bi-geo-alt-fill text-warning me-1"></i> Assigned Territory: <strong>Barangay Poblacion (Wards 1–4), Minglanilla, Cebu</strong>
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('personnel.route_map') }}" class="btn btn-warning text-dark fw-bold shadow-sm">
+                    <i class="bi bi-geo-alt-fill me-1"></i>Open Assigned Route Map
+                </a>
+                <a href="{{ url_for('personnel.tasks') }}" class="btn btn-outline-light fw-bold">
+                    <i class="bi bi-list-task me-1"></i>View All Tasks
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Collector Metric KPI Cards -->
+    <div class="col-md-3 col-6">
+        <div class="eco-card p-3 border-start border-4 border-warning">
+            <div class="text-muted small fw-semibold">PENDING DISPATCH</div>
+            <div class="h3 fw-bold mb-0 text-warning">{{ assigned_count }}</div>
+            <div class="small text-muted">Awaiting collection start</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="eco-card p-3 border-start border-4 border-info">
+            <div class="text-muted small fw-semibold">IN PROGRESS</div>
+            <div class="h3 fw-bold mb-0 text-info">{{ in_progress_count }}</div>
+            <div class="small text-muted">Currently being collected</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="eco-card p-3 border-start border-4" style="border-left-color: #14b8a6 !important;">
+            <div class="text-muted small fw-semibold">COLLECTED (PENDING REVIEW)</div>
+            <div class="h3 fw-bold mb-0" style="color: #0d9488;">{{ collected_count }}</div>
+            <div class="small text-muted">Proof uploaded to admin</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="eco-card p-3 border-start border-4 border-success">
+            <div class="text-muted small fw-semibold">COMPLETED</div>
+            <div class="h3 fw-bold mb-0 text-success">{{ completed_count }}</div>
+            <div class="small text-muted">Fully verified collections</div>
+        </div>
+    </div>
+
+    <!-- Active Tasks Queue (Urgent first) -->
+    <div class="col-lg-7">
+        <div class="eco-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                <h2 class="h5 fw-bold mb-0 text-dark">
+                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>Active Task Queue ({{ active_tasks|length }})
+                </h2>
+                <a href="{{ url_for('personnel.tasks') }}" class="btn btn-sm btn-outline-secondary">All Tasks</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Priority</th>
+                            <th>Tracking ID</th>
+                            <th>Location in Poblacion</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in active_tasks %}
+                        <tr>
+                            <td>
+                                <span class="badge {{ t.get_priority_badge() }}">{{ t.priority }}</span>
+                            </td>
+                            <td>
+                                <span class="fw-bold font-monospace text-primary">{{ t.report.tracking_code }}</span>
+                                <div class="text-muted" style="font-size: 0.72rem;">{{ t.report.waste_category }}</div>
+                            </td>
+                            <td>
+                                <div class="small fw-semibold text-dark">{{ t.report.location_description }}</div>
+                                <div class="text-muted font-monospace" style="font-size: 0.72rem;">{{ t.report.latitude }}, {{ t.report.longitude }}</div>
+                            </td>
+                            <td>
+                                <span class="badge {{ t.task_status|status_badge_class }}">{{ t.task_status }}</span>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('personnel.task_detail', assignment_id=t.id) }}" class="btn btn-sm btn-warning text-dark fw-bold">
+                                    <i class="bi bi-geo-alt me-1"></i>Attend Task
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-5">
+                                <i class="bi bi-check2-circle fs-2 text-success d-block mb-2"></i>
+                                Great job! No active tasks currently awaiting collection.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Route Map Preview -->
+    <div class="col-lg-5">
+        <div class="eco-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="h6 fw-bold mb-0"><i class="bi bi-map-fill text-warning me-2"></i>Assigned Territory Overview</h3>
+                <a href="{{ url_for('personnel.route_map') }}" class="small text-decoration-none">Full Screen Map</a>
+            </div>
+            <p class="text-muted small mb-3">Poblacion operational boundary and assigned collection pins.</p>
+
+            <div id="collectorDashboardMap" class="eco-map-container map-sm"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize personnel map showing only their assigned reports
+        EcoGIS.initReportsMap('collectorDashboardMap', {
+            initialStatus: 'all',
+            role: 'personnel'
+        });
+    });
+</script>
+{% endblock %}
