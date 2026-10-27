@@ -1,0 +1,767 @@
+/* ==========================================================================
+   ECO TRACK — Modern Civic-Tech GIS Design System
+   A Proposed Waste Management System for Minglanilla, Cebu
+   Typography: Plus Jakarta Sans (Headings) + Inter (UI/Body) + JetBrains Mono
+   Palette: Slate Neutrals + Emerald Brand Accent + Semantic Status Tokens
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+:root {
+    /* Brand Colors (Emerald) */
+    --brand-50:  #ecfdf5;
+    --brand-100: #d1fae5;
+    --brand-200: #a7f3d0;
+    --brand-500: #10b981;
+    --brand-600: #059669;
+    --brand-700: #047857;
+    --brand-800: #065f46;
+    --brand-900: #064e3b;
+
+    /* Neutral Slate Palette */
+    --slate-50:  #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+
+    /* Semantic Status Colors */
+    --amber-50:  #fffbeb;
+    --amber-100: #fef3c7;
+    --amber-500: #f59e0b;
+    --amber-600: #d97706;
+    --amber-800: #92400e;
+
+    --teal-50:   #f0fdfa;
+    --teal-100:  #ccfbf1;
+    --teal-600:  #0d9488;
+    --teal-800:  #115e59;
+
+    --blue-50:   #eff6ff;
+    --blue-600:  #2563eb;
+
+    --rose-50:   #fff1f2;
+    --rose-600:  #e11d48;
+
+    /* Surface & Layout Tokens */
+    --bg-body:       #f8fafc;
+    --bg-surface:    #ffffff;
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --radius-sm:     8px;
+    --radius-md:     10px;
+    --radius-lg:     14px;
+    --radius-xl:     18px;
+
+    /* Shadows */
+    --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+}
+
+/* --------------------------------------------------------------------------
+   Base Typography & Layout
+   -------------------------------------------------------------------------- */
+body {
+    background-color: var(--bg-body);
+    color: var(--slate-800);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.display-5, .display-6 {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--slate-900);
+    letter-spacing: -0.02em;
+    font-weight: 700;
+}
+
+.font-monospace {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.84em;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.app-container {
+    max-width: 1340px;
+    margin: 0 auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Navigation Bar
+   -------------------------------------------------------------------------- */
+.navbar-eco {
+    background-color: rgba(15, 23, 42, 0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.65rem 0;
+}
+
+.navbar-brand-eco {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: #ffffff !important;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.brand-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--brand-600);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+    flex-shrink: 0;
+}
+
+.service-area-pill {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background-color: rgba(16, 185, 129, 0.14);
+    color: #6ee7b7;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(110, 231, 183, 0.22);
+}
+
+.navbar-eco .nav-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--slate-300) !important;
+    padding: 0.45rem 0.8rem !important;
+    border-radius: var(--radius-sm);
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.navbar-eco .nav-link:hover,
+.navbar-eco .nav-link:focus {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.navbar-eco .nav-link.active-nav {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.11);
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons & Interactive Controls
+   -------------------------------------------------------------------------- */
+.btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    transition: all 0.15s ease;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+}
+
+.btn-sm {
+    font-size: 0.8125rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+}
+
+.btn-xs {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+}
+
+.btn-lg {
+    font-size: 0.95rem;
+    padding: 0.7rem 1.35rem;
+    border-radius: var(--radius-md);
+}
+
+.btn-brand,
+.btn-success {
+    background-color: var(--brand-600) !important;
+    border-color: var(--brand-600) !important;
+    color: #ffffff !important;
+    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
+}
+
+.btn-brand:hover,
+.btn-success:hover {
+    background-color: var(--brand-700) !important;
+    border-color: var(--brand-700) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
+}
+
+.btn-warning {
+    background-color: var(--amber-500) !important;
+    border-color: var(--amber-500) !important;
+    color: var(--slate-900) !important;
+}
+
+.btn-warning:hover {
+    background-color: var(--amber-600) !important;
+    border-color: var(--amber-600) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+    color: var(--slate-700);
+    border-color: var(--slate-300);
+    background-color: #ffffff;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--slate-50);
+    color: var(--slate-900);
+    border-color: var(--slate-400);
+}
+
+/* --------------------------------------------------------------------------
+   Surface Cards, Headers & KPI Tiles
+   -------------------------------------------------------------------------- */
+.eco-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.eco-card:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.page-header-banner {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.75rem;
+    box-shadow: var(--shadow-xs);
+}
+
+.page-header-banner.dark-slate {
+    background: var(--slate-900);
+    border-color: var(--slate-800);
+    color: #ffffff;
+}
+
+.page-header-banner.dark-slate h1,
+.page-header-banner.dark-slate h2 {
+    color: #ffffff;
+}
+
+.eyebrow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: var(--brand-50);
+    color: var(--brand-700);
+    border: 1px solid var(--brand-200);
+}
+
+.eyebrow-badge.amber {
+    background: var(--amber-50);
+    color: var(--amber-800);
+    border-color: #fde68a;
+}
+
+.eyebrow-badge.slate {
+    background: var(--slate-100);
+    color: var(--slate-700);
+    border-color: var(--slate-200);
+}
+
+/* Modern KPI Stat Cards */
+.kpi-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-xs);
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--slate-500);
+    margin-bottom: 0.35rem;
+}
+
+.kpi-value {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--slate-900);
+    margin-bottom: 0.2rem;
+}
+
+.kpi-subtext {
+    font-size: 0.775rem;
+    color: var(--slate-500);
+}
+
+.kpi-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.kpi-icon-box.emerald {
+    background: var(--brand-50);
+    color: var(--brand-600);
+}
+
+.kpi-icon-box.amber {
+    background: var(--amber-50);
+    color: var(--amber-600);
+}
+
+.kpi-icon-box.teal {
+    background: var(--teal-50);
+    color: var(--teal-600);
+}
+
+.kpi-icon-box.blue {
+    background: var(--blue-50);
+    color: var(--blue-600);
+}
+
+.kpi-icon-box.slate {
+    background: var(--slate-100);
+    color: var(--slate-700);
+}
+
+/* --------------------------------------------------------------------------
+   Role & Feature Cards (Homepage)
+   -------------------------------------------------------------------------- */
+.action-hero-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    border: 1px solid var(--border-subtle);
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-shadow: var(--shadow-xs);
+}
+
+.action-hero-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--slate-300);
+}
+
+/* --------------------------------------------------------------------------
+   Semantic Status Badges & Pills
+   -------------------------------------------------------------------------- */
+.badge {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 0.35em 0.7em;
+    border-radius: 999px;
+}
+
+.badge-status-pending {
+    background-color: var(--amber-50) !important;
+    color: var(--amber-800) !important;
+    border: 1px solid #fde68a !important;
+}
+
+.badge-status-collected {
+    background-color: var(--teal-50) !important;
+    color: var(--teal-800) !important;
+    border: 1px solid #99f6e4 !important;
+}
+
+.badge-status-completed {
+    background-color: var(--brand-50) !important;
+    color: var(--brand-800) !important;
+    border: 1px solid var(--brand-200) !important;
+}
+
+.badge-status-verified,
+.badge-status-assigned,
+.badge-status-inprogress {
+    background-color: var(--blue-50) !important;
+    color: var(--blue-600) !important;
+    border: 1px solid #bfdbfe !important;
+}
+
+.badge-status-rejected {
+    background-color: var(--rose-50) !important;
+    color: var(--rose-600) !important;
+    border: 1px solid #fecdd3 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Modern Tables & Filter Pills
+   -------------------------------------------------------------------------- */
+.table {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+}
+
+.table > thead > tr > th {
+    background-color: var(--slate-50);
+    color: var(--slate-500);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+    white-space: nowrap;
+}
+
+.table > tbody > tr > td {
+    padding: 0.95rem 1rem;
+    border-bottom: 1px solid var(--slate-100);
+    color: var(--slate-700);
+    vertical-align: middle;
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--slate-50);
+}
+
+.nav-pills .nav-link {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.45rem 0.95rem;
+    border-radius: var(--radius-sm);
+    color: var(--slate-600);
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   Forms, Inputs & Category Selector Grid
+   -------------------------------------------------------------------------- */
+.form-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--slate-700);
+    margin-bottom: 0.4rem;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid var(--slate-300);
+    border-radius: var(--radius-md);
+    padding: 0.55rem 0.85rem;
+    font-size: 0.875rem;
+    color: var(--slate-800);
+    background-color: #ffffff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--brand-600);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.14);
+}
+
+.form-control::placeholder {
+    color: var(--slate-400);
+}
+
+/* Category Choice Cards (Visual Grid for Reporting) */
+.category-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    gap: 0.65rem;
+}
+
+.category-choice-card {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 0.6rem;
+    text-align: center;
+    cursor: pointer;
+    background: #ffffff;
+    transition: all 0.15s ease;
+    user-select: none;
+    position: relative;
+}
+
+.category-choice-card:hover {
+    border-color: var(--slate-300);
+    background: var(--slate-50);
+}
+
+.category-choice-card.selected {
+    border-color: var(--brand-600);
+    background: var(--brand-50);
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.16);
+}
+
+.category-choice-card .category-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+    display: block;
+    color: var(--brand-600);
+}
+
+.category-choice-card .category-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--slate-800);
+}
+
+.category-choice-card.selected .category-label {
+    color: var(--brand-800);
+}
+
+.category-choice-card .check-pill {
+    display: none;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--brand-600);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-choice-card.selected .check-pill {
+    display: flex;
+}
+
+/* Photo Upload Dropzone */
+.upload-dropzone {
+    border: 1.5px dashed var(--slate-300);
+    border-radius: var(--radius-md);
+    padding: 1.35rem;
+    text-align: center;
+    background: var(--slate-50);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.upload-dropzone:hover {
+    border-color: var(--brand-600);
+    background: var(--brand-50);
+}
+
+/* --------------------------------------------------------------------------
+   GIS Map Container & Controls
+   -------------------------------------------------------------------------- */
+.eco-map-container {
+    width: 100%;
+    height: 500px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    position: relative;
+    background: var(--slate-100);
+}
+
+.eco-map-container.map-sm {
+    height: 360px;
+}
+
+.eco-map-container.map-lg {
+    height: 620px;
+}
+
+.map-legend-box {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    box-shadow: var(--shadow-md);
+    max-width: 250px;
+}
+
+.map-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.coordinate-preview-box {
+    background: var(--slate-50);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1rem;
+    transition: all 0.15s ease;
+}
+
+.coordinate-preview-box.valid {
+    background: var(--brand-50);
+    border-color: var(--brand-200);
+}
+
+.coordinate-preview-box.invalid {
+    background: var(--rose-50);
+    border-color: #fecdd3;
+}
+
+/* --------------------------------------------------------------------------
+   Audit Timeline
+   -------------------------------------------------------------------------- */
+.eco-timeline {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-top: 0.75rem;
+}
+
+.eco-timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--slate-200);
+}
+
+.timeline-step {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+.timeline-step:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-step-dot {
+    position: absolute;
+    left: -1.5rem;
+    top: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2.5px solid var(--amber-500);
+}
+
+.timeline-step.completed .timeline-step-dot {
+    border-color: var(--brand-600);
+    background: var(--brand-600);
+}
+
+/* --------------------------------------------------------------------------
+   Floating Action Button & Footer
+   -------------------------------------------------------------------------- */
+.fab-report {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1040;
+    background: var(--brand-600);
+    color: #ffffff !important;
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.32);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.fab-report:hover {
+    transform: translateY(-2px);
+    background: var(--brand-700);
+    box-shadow: 0 12px 24px rgba(5, 150, 105, 0.4);
+}
+
+.footer-eco {
+    background-color: var(--slate-900);
+    color: var(--slate-400);
+    border-top: 1px solid var(--slate-800);
+    font-size: 0.825rem;
+    padding: 2rem 0;
+}
+
+.footer-eco a {
+    color: var(--slate-300);
+    text-decoration: none;
+    transition: color 0.15s ease;
+    cursor: pointer;
+}
+
+.footer-eco a:hover {
+    color: #ffffff;
+}

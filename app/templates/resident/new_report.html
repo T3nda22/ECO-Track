@@ -1,20 +1,21 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Report Full Bin - Pin on Map | Poblacion, Minglanilla{% endblock %}
+{% block title %}Pinpoint Full Garbage Bin on Map | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <!-- Header -->
     <div class="col-12">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 p-3 rounded-4 bg-white border shadow-sm">
-            <div class="d-flex align-items-center gap-3">
-                <div class="brand-icon bg-warning text-dark fs-4" style="width: 48px; height: 48px; border-radius: 12px;">
-                    <i class="bi bi-trash3-fill"></i>
+        <div class="page-header-banner d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="eyebrow-badge mb-2">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <span>Resident Map Reporting &bull; Minglanilla Poblacion</span>
                 </div>
-                <div>
-                    <h1 class="h4 fw-bold mb-0 text-dark">Report Full or Overflowing Bin</h1>
-                    <div class="small text-muted">Exclusively for <strong>Barangay Poblacion, Minglanilla, Cebu</strong></div>
-                </div>
+                <h1 class="h4 fw-bold mb-1">Pinpoint Full Garbage Bin on GIS Map</h1>
+                <p class="text-secondary small mb-0">
+                    Records report location, photo, time submitted, and status on the shared GIS map.
+                </p>
             </div>
             <div>
                 <a href="{{ url_for('resident.dashboard') }}" class="btn btn-sm btn-outline-secondary">
@@ -24,147 +25,138 @@
         </div>
     </div>
 
-    <!-- MAIN REPORTING WORKFLOW (Step 1, Step 2, Step 3) -->
+    <!-- Left Column: Report Details & Photo -->
     <div class="col-lg-5">
         <div class="eco-card p-4">
             <form method="POST" action="{{ url_for('resident.new_report') }}" enctype="multipart/form-data" id="reportForm" novalidate>
                 {{ form.hidden_tag() }}
-
-                <!-- Hidden Lat & Lng -->
                 {{ form.latitude(id="reportLat") }}
                 {{ form.longitude(id="reportLng") }}
 
-                <!-- STEP 1: VISUAL PROBLEM SELECTOR (Less reading, more doing) -->
+                <!-- Step 1: Select Waste Concern -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <label class="form-label fw-bold mb-0 text-dark fs-6">
-                            <span class="badge bg-success rounded-circle me-1">1</span> Select Waste Problem:
-                        </label>
-                        <span class="small text-muted">Tap an option</span>
+                        <label class="form-label mb-0">1. Select Waste Concern</label>
+                        <span class="small text-secondary">Choose category</span>
                     </div>
 
-                    <!-- Hidden Select Field bound to WTForms -->
                     <div class="d-none">
                         {{ form.waste_category(id="wasteCategorySelect") }}
                     </div>
 
-                    <!-- Visual Icon Choice Grid -->
                     <div class="category-choice-grid">
-                        <div class="category-choice-card selected" data-value="Overflowing Bin" data-title="Overflowing Garbage Bin">
+                        <div class="category-choice-card selected" data-value="Full Garbage Bin" data-title="Full Garbage Bin In Need of Collection">
                             <span class="check-pill"><i class="bi bi-check"></i></span>
-                            <span class="category-icon">🗑️</span>
+                            <span class="category-icon"><i class="bi bi-trash3"></i></span>
+                            <span class="category-label">Full Garbage Bin</span>
+                        </div>
+                        <div class="category-choice-card" data-value="Overflowing Bin" data-title="Overflowing Garbage Bin">
+                            <span class="check-pill"><i class="bi bi-check"></i></span>
+                            <span class="category-icon"><i class="bi bi-inboxes"></i></span>
                             <span class="category-label">Overflowing Bin</span>
                         </div>
-                        <div class="category-choice-card" data-value="Full Garbage Bin" data-title="Full Bin Awaiting Pickup">
+                        <div class="category-choice-card" data-value="Uncollected Garbage" data-title="Uncollected Garbage Awaiting Pickup">
                             <span class="check-pill"><i class="bi bi-check"></i></span>
-                            <span class="category-icon">📦</span>
-                            <span class="category-label">Full Bin</span>
+                            <span class="category-icon"><i class="bi bi-clock-history"></i></span>
+                            <span class="category-label">Uncollected Bin</span>
                         </div>
-                        <div class="category-choice-card" data-value="Scattered Waste" data-title="Scattered Roadside Waste">
+                        <div class="category-choice-card" data-value="Bins Needing Cleaning" data-title="Garbage Bin In Need of Cleaning">
                             <span class="check-pill"><i class="bi bi-check"></i></span>
-                            <span class="category-icon">🍂</span>
-                            <span class="category-label">Scattered Trash</span>
+                            <span class="category-icon"><i class="bi bi-stars"></i></span>
+                            <span class="category-label">Needs Cleaning</span>
                         </div>
-                        <div class="category-choice-card" data-value="Bulky Waste" data-title="Bulky Debris / Branches">
+                        <div class="category-choice-card" data-value="Scattered Waste" data-title="Scattered Waste Around Bin Area">
                             <span class="check-pill"><i class="bi bi-check"></i></span>
-                            <span class="category-icon">🪵</span>
-                            <span class="category-label">Bulky Debris</span>
+                            <span class="category-icon"><i class="bi bi-exclamation-diamond"></i></span>
+                            <span class="category-label">Scattered Waste</span>
                         </div>
-                        <div class="category-choice-card" data-value="Illegal Dumping" data-title="Illegal Garbage Dumping Site">
+                        <div class="category-choice-card" data-value="Other Waste Concern" data-title="Community Waste Concern">
                             <span class="check-pill"><i class="bi bi-check"></i></span>
-                            <span class="category-icon">⚠️</span>
-                            <span class="category-label">Illegal Dump</span>
-                        </div>
-                        <div class="category-choice-card" data-value="Other Waste Concern" data-title="Waste Collection Concern">
-                            <span class="check-pill"><i class="bi bi-check"></i></span>
-                            <span class="category-icon">❓</span>
+                            <span class="category-icon"><i class="bi bi-question-circle"></i></span>
                             <span class="category-label">Other Concern</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Hidden / Auto-filled Title Field -->
+                <!-- Report Title -->
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="title">Report Title</label>
-                    {{ form.title(class="form-control form-control-sm" + (" is-invalid" if form.title.errors else ""), placeholder="e.g. Overflowing garbage bin outside stall 14", id="title", value="Overflowing Garbage Bin") }}
+                    <label class="form-label" for="title">Report Title</label>
+                    {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else ""), placeholder="e.g. Full garbage bin needing collection", id="title", value="Full Garbage Bin In Need of Collection") }}
                     {% for error in form.title.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
-                <!-- Street / Landmark Location Details -->
+                <!-- Location Description -->
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="location_description">
-                        <i class="bi bi-geo-alt-fill text-danger me-1"></i>Street or Landmark in Poblacion <span class="text-danger">*</span>
+                    <label class="form-label" for="location_description">
+                        Street, Sitio, or Landmark in Poblacion, Minglanilla <span class="text-danger">*</span>
                     </label>
-                    {{ form.location_description(class="form-control" + (" is-invalid" if form.location_description.errors else ""), placeholder="e.g. Corner Caballero St., near Market Stall 14", id="location_description") }}
+                    {{ form.location_description(class="form-control" + (" is-invalid" if form.location_description.errors else ""), placeholder="e.g. Corner Caballero St., near Minglanilla Public Market", id="location_description") }}
                     {% for error in form.location_description.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
-                <!-- Optional Short Description -->
+                <!-- Condition Details -->
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="description">Additional Details (Optional)</label>
-                    {{ form.description(class="form-control", rows=2, placeholder="e.g. 3 large black bags overflowing onto sidewalk; smell is strong", id="description") }}
+                    <label class="form-label" for="description">Additional Details (Optional)</label>
+                    {{ form.description(class="form-control", rows=2, placeholder="Describe the condition of the garbage bin or surrounding area...", id="description") }}
                 </div>
 
-                <!-- STEP 2: PHOTO UPLOAD (Visual Dropzone with Live Preview) -->
+                <!-- Step 2: Upload Photo -->
                 <div class="mb-4">
-                    <label class="form-label fw-bold mb-2 text-dark fs-6">
-                        <span class="badge bg-success rounded-circle me-1">2</span> Attach Photo (Optional):
-                    </label>
+                    <label class="form-label">2. Upload Photo of Reported Bin</label>
 
                     <div class="upload-dropzone" onclick="document.getElementById('photoInput').click()">
                         <div id="dropzonePrompt">
-                            <i class="bi bi-camera-fill text-success fs-1 d-block mb-1"></i>
-                            <div class="fw-bold text-dark small">Tap to Take or Upload Photo</div>
-                            <div class="text-muted" style="font-size: 0.75rem;">JPG, PNG, WEBP up to 10MB</div>
+                            <i class="bi bi-camera text-success fs-3 d-block mb-1"></i>
+                            <div class="fw-semibold text-dark small">Click to attach a photo of the garbage bin</div>
+                            <div class="text-secondary" style="font-size: 0.75rem;">JPG, PNG, or WEBP up to 10MB</div>
                         </div>
                         <div id="photoPreviewContainer" style="display: none;">
-                            <img id="photoPreviewImg" src="#" alt="Preview" class="img-fluid rounded border shadow-sm" style="max-height: 140px;">
-                            <div class="small text-success fw-bold mt-1"><i class="bi bi-check-circle-fill me-1"></i>Photo attached</div>
+                            <img id="photoPreviewImg" src="#" alt="Preview" class="img-fluid rounded border shadow-xs" style="max-height: 140px;">
+                            <div class="small text-success fw-semibold mt-2"><i class="bi bi-check-circle-fill me-1"></i>Photo attached</div>
                         </div>
                     </div>
                     {{ form.photo(class="d-none", id="photoInput", accept="image/*") }}
                 </div>
 
-                <!-- STEP 3: SUBMIT BUTTON -->
-                <div class="pt-2 border-top">
-                    <button type="button" class="btn btn-success w-100 py-3 fw-bold fs-5 shadow-sm d-flex align-items-center justify-content-center gap-2" id="btnOpenConfirmModal" disabled>
-                        <i class="bi bi-send-check-fill"></i>
-                        <span>Confirm & Submit Report</span>
+                <!-- Step 3: Submit -->
+                <div class="pt-3 border-top">
+                    <button type="button" class="btn btn-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-2" id="btnOpenConfirmModal" disabled>
+                        <i class="bi bi-send-check"></i>
+                        <span>Submit Waste Report</span>
                     </button>
-                    <div class="text-center small text-muted mt-2">
-                        <i class="bi bi-shield-check text-success me-1"></i> Instant notification sent to municipal collectors
+                    <div class="text-center small text-secondary mt-2">
+                        Pinpoint a location inside the green boundary on the map to enable submission.
                     </div>
                 </div>
 
-                <!-- Simple Confirmation Modal -->
+                <!-- Confirmation Modal -->
                 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content border-0 shadow">
-                            <div class="modal-header bg-success text-white">
-                                <h5 class="modal-title h6 fw-bold" id="confirmModalLabel"><i class="bi bi-check2-circle me-2"></i>Confirm Waste Report</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-content border-0 shadow-lg rounded-4">
+                            <div class="modal-header border-bottom px-4 py-3">
+                                <h5 class="modal-title h6 fw-bold mb-0" id="confirmModalLabel">Confirm Waste Report</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body p-4">
-                                <div class="text-center mb-3">
-                                    <div class="fs-1 text-success mb-1">📍</div>
-                                    <h6 class="fw-bold text-dark mb-1" id="modalPreviewTitle"></h6>
-                                    <div class="badge bg-secondary mb-2" id="modalPreviewCategory"></div>
+                                <div class="mb-3">
+                                    <span class="badge bg-light text-dark border mb-2" id="modalPreviewCategory"></span>
+                                    <h6 class="fw-bold text-dark mb-0" id="modalPreviewTitle"></h6>
                                 </div>
                                 <div class="bg-light p-3 rounded-3 border mb-3 small">
-                                    <div class="mb-1"><strong>Location:</strong> <span id="modalPreviewLocation"></span></div>
-                                    <div><strong>GPS Pin:</strong> <span id="modalPreviewCoords" class="font-monospace text-primary"></span></div>
+                                    <div class="mb-1"><strong class="text-dark">Location:</strong> <span id="modalPreviewLocation" class="text-secondary"></span></div>
+                                    <div><strong class="text-dark">GIS Coordinates:</strong> <span id="modalPreviewCoords" class="font-monospace text-dark"></span></div>
                                 </div>
-                                <div class="small text-muted text-center">
-                                    Are you ready to submit this report to municipal waste collectors in Poblacion, Minglanilla?
+                                <div class="small text-secondary">
+                                    This report will be recorded with your pinpointed coordinates, photo, submission timestamp, and <strong>Pending (Outstanding)</strong> status on the shared GIS map.
                                 </div>
                             </div>
-                            <div class="modal-footer border-0 bg-light">
+                            <div class="modal-footer border-top bg-light px-4 py-2">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Adjust Pin</button>
-                                <button type="button" class="btn btn-success fw-bold px-4" id="btnSubmitFormFinal">Yes, Submit Report</button>
+                                <button type="button" class="btn btn-brand btn-sm px-3" id="btnSubmitFormFinal">Confirm &amp; Submit</button>
                             </div>
                         </div>
                     </div>
@@ -173,42 +165,39 @@
         </div>
     </div>
 
-    <!-- RIGHT: INTERACTIVE GIS MAP (The Star of the Show!) -->
+    <!-- Right Column: Interactive GIS Map -->
     <div class="col-lg-7">
         <div class="eco-card p-4 h-100 d-flex flex-column">
-            <!-- Map Header with Big "GPS Locate Me" Button -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
                 <div>
-                    <h2 class="h5 fw-bold mb-0 text-dark">
-                        <i class="bi bi-geo-alt-fill text-danger me-2"></i>Tap Location on Map
-                    </h2>
-                    <div class="text-muted small">Tap inside the green perimeter to drop your pin</div>
+                    <h2 class="h6 fw-bold mb-0">3. Pinpoint Bin Location on Map</h2>
+                    <div class="text-secondary small">Click anywhere inside the Minglanilla Poblacion boundary to place the marker</div>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-outline-primary btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm" id="btnLocateMe">
-                        <i class="bi bi-crosshair fs-6"></i> <span>Use My GPS</span>
+                    <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" id="btnLocateMe">
+                        <i class="bi bi-crosshair"></i> <span>Use My Location</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Quick Landmark Jump Bar (1-Click Pin Placement!) -->
-            <div class="d-flex flex-wrap gap-1 mb-2 align-items-center">
-                <span class="small fw-bold text-muted me-1"><i class="bi bi-pin-map-fill text-success"></i> Quick Jump:</span>
+            <!-- Quick Landmark Jump Bar -->
+            <div class="d-flex flex-wrap gap-1 mb-3 align-items-center">
+                <span class="small fw-semibold text-secondary me-1">Landmarks:</span>
                 {% for lm in landmarks %}
-                <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2 btn-landmark-jump" style="font-size: 0.72rem; border-radius: 20px;" data-lat="{{ lm.lat }}" data-lng="{{ lm.lng }}" data-name="{{ lm.name }}">
+                <button type="button" class="btn btn-xs btn-outline-secondary btn-landmark-jump" data-lat="{{ lm.lat }}" data-lng="{{ lm.lng }}" data-name="{{ lm.name }}">
                     {{ lm.name }}
                 </button>
                 {% endfor %}
             </div>
 
             <!-- Leaflet Map Canvas -->
-            <div id="pickerMap" class="eco-map-container flex-grow-1" style="min-height: 480px;"></div>
+            <div id="pickerMap" class="eco-map-container flex-grow-1" style="min-height: 460px;"></div>
 
-            <!-- Visual Real-Time Validation Status Bar -->
+            <!-- Coordinate Preview -->
             <div id="coordinatePreview" class="coordinate-preview-box mt-3 text-center">
-                <div class="text-muted small">
-                    <i class="bi bi-hand-index-thumb text-primary me-1 fs-5"></i>
-                    <strong>Tap anywhere on the map above</strong> to pinpoint the garbage bin in Poblacion.
+                <div class="text-secondary small">
+                    <i class="bi bi-geo-alt text-success me-1"></i>
+                    Click inside the highlighted boundary on the map above to pinpoint the full garbage bin.
                 </div>
             </div>
         </div>
@@ -219,7 +208,6 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // 1. Initialize GIS picker map
         const picker = EcoGIS.initReportPickerMap(
             'pickerMap',
             'reportLat',
@@ -228,7 +216,6 @@
             'btnOpenConfirmModal'
         );
 
-        // 2. Interactive Category Choice Cards
         const categoryCards = document.querySelectorAll('.category-choice-card');
         const hiddenCategorySelect = document.getElementById('wasteCategorySelect');
         const titleInput = document.getElementById('title');
@@ -242,14 +229,12 @@
                 const defaultTitle = this.getAttribute('data-title');
                 hiddenCategorySelect.value = val;
 
-                // Auto update title if user hasn't typed custom title
-                if (titleInput && (!titleInput.value || titleInput.value.includes('Bin') || titleInput.value.includes('Waste'))) {
+                if (titleInput && (!titleInput.value || titleInput.value.includes('Bin') || titleInput.value.includes('Garbage') || titleInput.value.includes('Waste') || titleInput.value.includes('Concern'))) {
                     titleInput.value = defaultTitle;
                 }
             });
         });
 
-        // 3. Quick Landmark Jump Buttons (1 tap to drop pin!)
         document.querySelectorAll('.btn-landmark-jump').forEach(btn => {
             btn.addEventListener('click', function () {
                 const lat = parseFloat(this.getAttribute('data-lat'));
@@ -264,7 +249,6 @@
             });
         });
 
-        // 4. "Use My GPS" Location Button
         const locateBtn = document.getElementById('btnLocateMe');
         if (locateBtn) {
             locateBtn.addEventListener('click', function () {
@@ -279,19 +263,18 @@
                     function (pos) {
                         picker.setMarker(pos.coords.latitude, pos.coords.longitude);
                         locateBtn.disabled = false;
-                        locateBtn.innerHTML = '<i class="bi bi-crosshair fs-6"></i> <span>Use My GPS</span>';
+                        locateBtn.innerHTML = '<i class="bi bi-crosshair"></i> <span>Use My Location</span>';
                     },
-                    function (err) {
-                        alert('Could not retrieve your GPS location. Please tap directly on the map inside Poblacion.');
+                    function () {
+                        alert('Could not retrieve your location. Please click directly on the map inside Poblacion.');
                         locateBtn.disabled = false;
-                        locateBtn.innerHTML = '<i class="bi bi-crosshair fs-6"></i> <span>Use My GPS</span>';
+                        locateBtn.innerHTML = '<i class="bi bi-crosshair"></i> <span>Use My Location</span>';
                     },
                     { enableHighAccuracy: true, timeout: 8000 }
                 );
             });
         }
 
-        // 5. Photo Live Preview
         const photoInput = document.getElementById('photoInput');
         const previewImg = document.getElementById('photoPreviewImg');
         const previewContainer = document.getElementById('photoPreviewContainer');
@@ -312,7 +295,6 @@
             });
         }
 
-        // 6. Confirmation Modal
         const btnOpenConfirm = document.getElementById('btnOpenConfirmModal');
         const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
         const btnFinalSubmit = document.getElementById('btnSubmitFormFinal');
@@ -326,7 +308,7 @@
             const lng = document.getElementById('reportLng').value;
 
             if (!location) {
-                alert('Please enter a street name or landmark address.');
+                alert('Please enter a street name or landmark address in Poblacion, Minglanilla.');
                 document.getElementById('location_description').focus();
                 return;
             }

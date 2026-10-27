@@ -2,10 +2,10 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import (
     StringField, PasswordField, BooleanField, SubmitField,
-    TextAreaField, SelectField, FloatField, HiddenField
+    TextAreaField, SelectField, HiddenField
 )
 from wtforms.validators import (
-    DataRequired, Email, Length, EqualTo, ValidationError, Optional, NumberRange
+    DataRequired, Email, Length, EqualTo, ValidationError, Optional
 )
 from app.models import User
 from app.utils.geo import is_point_in_poblacion
@@ -39,119 +39,78 @@ class ResidentRegistrationForm(FlaskForm):
 
 
 class ReportSubmissionForm(FlaskForm):
-    """Waste report submission form with GIS coordinates."""
+    """
+    Waste report submission form allowing residents of Minglanilla (Poblacion pilot area)
+    to pinpoint full garbage bins on a GIS map and record location, photo, time submitted, and status.
+    """
     title = StringField('Report Title', validators=[
         DataRequired(),
         Length(min=5, max=140, message='Title must be between 5 and 140 characters.')
     ])
-    waste_category = SelectField('Waste Problem Category', choices=[
+    waste_category = SelectField('Waste Concern Type', choices=[
+        ('Full Garbage Bin', 'Full Garbage Bin In Need of Collection'),
         ('Overflowing Bin', 'Overflowing Public Garbage Bin'),
-        ('Full Garbage Bin', 'Full Garbage Bin Awaiting Collection'),
-        ('Scattered Waste', 'Scattered Waste / Littered Roadside'),
-        ('Bulky Waste', 'Bulky Waste (Branches, Furniture, Debris)'),
-        ('Illegal Dumping', 'Illegal Dumping Site / Stacked Garbage'),
-        ('Other Waste Concern', 'Other Solid Waste Concern')
+        ('Uncollected Garbage', 'Uncollected Garbage / Delayed Pickup'),
+        ('Bins Needing Cleaning', 'Garbage Bin In Need of Cleaning / Sanitation'),
+        ('Scattered Waste', 'Scattered Waste Around Bin Area'),
+        ('Other Waste Concern', 'Other Waste-Related Concern')
     ], validators=[DataRequired()])
-    location_description = StringField('Specific Street or Landmark Address in Poblacion', validators=[
+    location_description = StringField('Specific Street, Sitio, or Landmark in Poblacion, Minglanilla', validators=[
         DataRequired(),
-        Length(min=5, max=250, message='Please provide a clear street name, landmark, or house near the waste.')
+        Length(min=5, max=250, message='Please provide a clear street name, sitio, or landmark near the reported bin.')
     ])
-    description = TextAreaField('Detailed Description of the Waste Condition', validators=[
-        DataRequired(),
-        Length(min=10, max=1000, message='Please describe the waste volume, type, and situation.')
+    description = TextAreaField('Description of the Waste Concern', validators=[
+        Optional(),
+        Length(max=1000)
     ])
     latitude = HiddenField('Latitude', validators=[DataRequired()])
     longitude = HiddenField('Longitude', validators=[DataRequired()])
-    photo = FileField('Upload Waste Photo (Optional)', validators=[
+    photo = FileField('Upload Photo of Reported Bin (Recommended)', validators=[
         FileAllowed(['jpg', 'jpeg', 'png', 'webp'], 'Only images (.jpg, .jpeg, .png, .webp) are allowed.')
     ])
     submit = SubmitField('Submit Waste Report')
 
     def validate_latitude(self, field):
         try:
-            lat = float(field.data)
+            float(field.data)
         except (ValueError, TypeError):
-            raise ValidationError('Please pinpoint a valid location on the interactive map.')
+            raise ValidationError('Please pinpoint a valid bin location on the interactive map.')
 
     def validate_longitude(self, field):
         try:
             lng = float(field.data)
             lat = float(self.latitude.data)
         except (ValueError, TypeError):
-            raise ValidationError('Please pinpoint a valid location on the interactive map.')
+            raise ValidationError('Please pinpoint a valid bin location on the interactive map.')
 
         if not is_point_in_poblacion(lat, lng):
             raise ValidationError(
-                'The selected coordinates are outside Barangay Poblacion, Minglanilla. '
-                'ECO TRACK solely accepts reports located within the Poblacion service perimeter.'
+                'The selected coordinates are outside the Minglanilla Poblacion pilot area. '
+                'Please pinpoint a location within the highlighted boundary on the map.'
             )
 
 
-class ReportReviewForm(FlaskForm):
-    """Admin verification or rejection form."""
-    action = SelectField('Action', choices=[
-        ('verify', 'Verify Report (Proceed to Assignment)'),
-        ('reject', 'Reject Report (Invalid / Duplicate / Out of Scope)')
-    ], validators=[DataRequired()])
-    rejection_reason = TextAreaField('Reason for Rejection (Mandatory if rejected)', validators=[
+class PersonnelMarkReportForm(FlaskForm):
+    """
+    Form used by Garbage Collection Personnel to mark a reported garbage bin
+    as Cleaned or Collected on the GIS system, updating its status from Outstanding to Addressed.
+    """
+    resolution_status = SelectField('Mark Bin Status As', choices=[
+        ('Collected', 'Mark as Collected (Garbage bin emptied / collected)'),
+        ('Cleaned', 'Mark as Cleaned (Garbage bin and surrounding area cleaned)')
+    ], default='Collected', validators=[DataRequired()])
+    collection_notes = TextAreaField('Collection / Cleaning Remarks (Optional)', validators=[
         Optional(),
         Length(max=500)
     ])
-    submit = SubmitField('Update Report Status')
-
-
-class TaskAssignmentForm(FlaskForm):
-    """Admin assignment of verified report to collection personnel."""
-    personnel_id = SelectField('Assign to Collection Personnel', coerce=int, validators=[DataRequired()])
-    priority = SelectField('Task Priority', choices=[
-        ('Normal', 'Normal Priority'),
-        ('High', 'High Priority'),
-        ('Urgent', 'Urgent / Immediate Action Needed')
-    ], default='Normal', validators=[DataRequired()])
-    instructions = TextAreaField('Special Instructions / Notes for Personnel', validators=[
-        Optional(),
-        Length(max=500)
-    ])
-    submit = SubmitField('Assign Collection Task')
-
-
-class PersonnelTaskUpdateForm(FlaskForm):
-    """Personnel update form to transition task status to In Progress or Collected."""
-    task_action = SelectField('Action', choices=[
-        ('in_progress', 'Mark as In Progress (Heading to location / starting cleanup)'),
-        ('collected', 'Mark as Collected (Waste cleared & loaded)')
-    ], validators=[DataRequired()])
-    collection_notes = TextAreaField('Collection Remarks / Clearance Details', validators=[
-        Optional(),
-        Length(max=500)
-    ])
-    proof_photo = FileField('Proof of Collection Photo (Recommended for Collected status)', validators=[
+    proof_photo = FileField('Photo After Cleaning / Collection (Optional)', validators=[
         FileAllowed(['jpg', 'jpeg', 'png', 'webp'], 'Only images (.jpg, .jpeg, .png, .webp) are allowed.')
     ])
-    submit = SubmitField('Update Collection Task')
-
-
-class AdminConfirmCompletionForm(FlaskForm):
-    """Admin confirmation to mark a collected report as fully Completed."""
-    admin_notes = TextAreaField('Confirmation Notes (Optional)', validators=[
-        Optional(),
-        Length(max=500)
-    ])
-    submit = SubmitField('Confirm Report as Completed')
-
-
-class ScheduleForm(FlaskForm):
-    """Form to manage weekly collection schedules for Poblacion zones."""
-    service_area = StringField('Service Zone / Ward in Poblacion', validators=[DataRequired(), Length(max=120)])
-    collection_day = StringField('Collection Day(s)', validators=[DataRequired(), Length(max=40)])
-    collection_time = StringField('Time Window (e.g. 06:00 AM - 09:00 AM)', validators=[DataRequired(), Length(max=50)])
-    waste_type = StringField('Waste Type (e.g., Biodegradable, Recyclable, Residual)', validators=[DataRequired(), Length(max=60)])
-    schedule_notes = TextAreaField('Notes or Guidelines', validators=[Optional(), Length(max=500)])
-    submit = SubmitField('Save Collection Schedule')
+    submit = SubmitField('Confirm Status Update')
 
 
 class CreatePersonnelForm(FlaskForm):
-    """Admin form to register a new collection personnel account."""
+    """Admin form to register a new garbage collection personnel account."""
     full_name = StringField('Personnel Full Name', validators=[DataRequired(), Length(min=2, max=120)])
     email = StringField('Email Address', validators=[DataRequired(), Email(), Length(max=120)])
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=50)])

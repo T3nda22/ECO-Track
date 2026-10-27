@@ -1,138 +1,81 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Track Report {{ report.tracking_code }} - ECO TRACK{% endblock %}
+{% block title %}Report {{ report.tracking_code }} | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
-    <!-- Back Button & Status Header -->
+    <!-- Top Bar -->
     <div class="col-12">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
             <a href="{{ url_for('resident.my_reports') }}" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-arrow-left me-1"></i>Back to My Reports
             </a>
             <div class="d-flex align-items-center gap-2">
-                <span class="small text-muted">Current Status:</span>
-                <span class="badge {{ report.current_status|status_badge_class }} fs-6 px-3 py-2 shadow-sm">
-                    {{ report.current_status }}
+                <span class="small text-secondary">Report Status:</span>
+                <span class="badge {{ report.current_status|status_badge_class }} fs-6 px-3 py-2">
+                    {{ report.current_status }} ({{ report.monitoring_state_label }})
                 </span>
             </div>
         </div>
     </div>
 
-    <!-- HORIZONTAL VISUAL STEPPER (Less reading, instant visual progress) -->
-    <div class="col-12">
-        <div class="eco-card p-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <h2 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-activity text-success me-2"></i>Collection Lifecycle Progress</h2>
-                <span class="font-monospace text-primary fw-bold">{{ report.tracking_code }}</span>
-            </div>
-
-            <!-- Stepper Steps -->
-            {% set s = report.current_status %}
-            <div class="horizontal-stepper d-none d-md-flex">
-                <!-- Step 1: Submitted -->
-                <div class="stepper-step {% if s in ['Pending', 'Verified', 'Assigned', 'In Progress', 'Collected', 'Completed'] %}completed{% endif %}">
-                    <div class="stepper-circle"><i class="bi bi-send-check"></i></div>
-                    <div class="stepper-label">1. Submitted</div>
-                </div>
-
-                <!-- Step 2: Verified -->
-                <div class="stepper-step {% if s in ['Verified', 'Assigned', 'In Progress', 'Collected', 'Completed'] %}completed{% elif s == 'Pending' %}active{% endif %}">
-                    <div class="stepper-circle"><i class="bi bi-check2-circle"></i></div>
-                    <div class="stepper-label">2. Verified</div>
-                </div>
-
-                <!-- Step 3: Assigned -->
-                <div class="stepper-step {% if s in ['Assigned', 'In Progress', 'Collected', 'Completed'] %}completed{% elif s == 'Verified' %}active{% endif %}">
-                    <div class="stepper-circle"><i class="bi bi-truck"></i></div>
-                    <div class="stepper-label">3. Dispatched</div>
-                </div>
-
-                <!-- Step 4: In Progress -->
-                <div class="stepper-step {% if s in ['In Progress', 'Collected', 'Completed'] %}completed{% elif s == 'Assigned' %}active{% endif %}">
-                    <div class="stepper-circle"><i class="bi bi-hourglass-split"></i></div>
-                    <div class="stepper-label">4. In Progress</div>
-                </div>
-
-                <!-- Step 5: Collected -->
-                <div class="stepper-step {% if s in ['Collected', 'Completed'] %}completed{% elif s == 'In Progress' %}active{% endif %}">
-                    <div class="stepper-circle"><i class="bi bi-camera-fill"></i></div>
-                    <div class="stepper-label">5. Collected</div>
-                </div>
-
-                <!-- Step 6: Completed -->
-                <div class="stepper-step {% if s == 'Completed' %}completed{% elif s == 'Collected' %}active{% endif %}">
-                    <div class="stepper-circle"><i class="bi bi-shield-fill-check"></i></div>
-                    <div class="stepper-label">6. Completed</div>
-                </div>
-            </div>
-
-            <!-- Mobile Stepper Indicator -->
-            <div class="d-md-none text-center p-3 bg-light rounded-3 mt-3">
-                <div class="h5 fw-bold text-dark mb-1">
-                    <i class="bi bi-arrow-right-circle text-success me-1"></i> {{ report.current_status }}
-                </div>
-                <div class="small text-muted">Tracking code: {{ report.tracking_code }}</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Left Column: Report Info, Photos, and Location -->
+    <!-- Left Column: Recorded Report Information & Photos -->
     <div class="col-lg-7">
         <div class="eco-card p-4 mb-4">
             <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
                 <div>
+                    <div class="small text-secondary font-monospace mb-1">{{ report.tracking_code }}</div>
                     <h1 class="h5 fw-bold text-dark mb-1">{{ report.title }}</h1>
-                    <span class="badge bg-secondary">{{ report.waste_category }}</span>
+                    <span class="badge bg-light text-dark border">{{ report.waste_category }}</span>
                 </div>
-                <div class="text-end small text-muted">
-                    <div>Submitted: {{ report.submission_timestamp|format_datetime }}</div>
+                <div class="text-end small text-secondary">
+                    <div><strong class="text-dark">Time Submitted:</strong><br>{{ report.submission_timestamp|format_datetime }}</div>
                 </div>
             </div>
 
+            <p class="text-secondary small mb-3">{{ report.description }}</p>
+
             <div class="bg-light p-3 rounded-3 mb-3 small border">
                 <div class="mb-1">
-                    <strong><i class="bi bi-geo-alt-fill text-danger me-1"></i>Poblacion Location:</strong>
-                    {{ report.location_description }}
+                    <strong class="text-dark"><i class="bi bi-geo-alt text-danger me-1"></i>Report Location:</strong>
+                    <span class="text-secondary">{{ report.location_description }}</span>
                 </div>
                 <div>
-                    <strong><i class="bi bi-crosshair text-primary me-1"></i>Coordinates:</strong>
+                    <strong class="text-dark"><i class="bi bi-crosshair text-primary me-1"></i>GIS Coordinates:</strong>
                     <span class="font-monospace text-dark">{{ report.latitude }}, {{ report.longitude }}</span>
                 </div>
             </div>
 
-            {% if report.rejection_reason %}
-                <div class="alert alert-danger py-2 small mb-3">
-                    <strong><i class="bi bi-x-circle-fill me-1"></i> Reason:</strong>
-                    {{ report.rejection_reason }}
-                </div>
-            {% endif %}
-
-            <!-- Side-by-Side Visual Proof -->
+            <!-- Photos -->
             <div class="row g-3">
                 <div class="col-md-6">
-                    <div class="border rounded p-3 text-center bg-white h-100">
-                        <div class="small fw-bold text-dark mb-2">📸 Reported Waste</div>
+                    <div class="border rounded-3 p-3 text-center bg-white h-100">
+                        <div class="small fw-semibold text-dark mb-2">Recorded Report Photo</div>
                         {% if report.photo_reference %}
-                            <img src="{{ url_for('static', filename='uploads/reports/' + report.photo_reference) }}" class="img-fluid rounded border shadow-sm" style="max-height: 200px; object-fit: cover;" alt="Reported Waste">
+                            <img src="{{ url_for('static', filename='uploads/reports/' + report.photo_reference) }}" class="img-fluid rounded border" style="max-height: 210px; object-fit: cover;" alt="Reported Waste">
                         {% else %}
-                            <div class="text-muted small py-4 bg-light rounded">No photo uploaded with report.</div>
+                            <div class="text-secondary small py-4 bg-light rounded-3">No photo uploaded with report.</div>
                         {% endif %}
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="border rounded p-3 text-center bg-white h-100">
-                        <div class="small fw-bold text-success mb-2">✅ Cleaned Site (Proof)</div>
-                        {% if report.task_assignment and report.task_assignment.collection_proof_photo_reference %}
-                            <img src="{{ url_for('static', filename='uploads/proofs/' + report.task_assignment.collection_proof_photo_reference) }}" class="img-fluid rounded border shadow-sm" style="max-height: 200px; object-fit: cover;" alt="Collection Proof">
-                            {% if report.task_assignment.collection_notes %}
-                                <div class="small text-muted mt-2 text-start p-1 bg-light rounded">
-                                    <em>"{{ report.task_assignment.collection_notes }}"</em>
+                    <div class="border rounded-3 p-3 text-center bg-white h-100">
+                        <div class="small fw-semibold text-dark mb-2">Personnel Resolution Status</div>
+                        {% if report.is_addressed %}
+                            <div class="p-2 rounded-3 mb-2 small fw-semibold badge-status-completed">
+                                Marked as {{ report.current_status }} by {{ report.resolved_by.full_name if report.resolved_by else 'Collection Personnel' }}
+                            </div>
+                            {% if report.collection_proof_photo %}
+                                <img src="{{ url_for('static', filename='uploads/proofs/' + report.collection_proof_photo) }}" class="img-fluid rounded border" style="max-height: 160px; object-fit: cover;" alt="Cleaned/Collected Bin">
+                            {% endif %}
+                            {% if report.collection_notes %}
+                                <div class="small text-secondary mt-2 text-start p-2 bg-light rounded-3 border">
+                                    "{{ report.collection_notes }}"
                                 </div>
                             {% endif %}
                         {% else %}
-                            <div class="text-muted small py-4 bg-light rounded">
-                                <i class="bi bi-camera me-1"></i> Clearance proof photo will appear here once collected.
+                            <div class="text-secondary small py-4 bg-light rounded-3">
+                                Currently <strong>Outstanding</strong> on the GIS map awaiting garbage collection personnel.
                             </div>
                         {% endif %}
                     </div>
@@ -142,28 +85,66 @@
 
         <!-- Interactive GIS Map -->
         <div class="eco-card p-4">
-            <h3 class="h6 fw-bold mb-2"><i class="bi bi-map-fill text-success me-2"></i>Pinpointed Waste Location</h3>
+            <h2 class="h6 fw-bold mb-2">Pinpointed Bin Location on GIS Map</h2>
             <div id="detailMap" class="eco-map-container map-sm"></div>
         </div>
     </div>
 
-    <!-- Right Column: Status Log / Activity Updates -->
+    <!-- Right Column: Status Progress & History -->
     <div class="col-lg-5">
         <div class="eco-card p-4 mb-4">
-            <h3 class="h6 fw-bold mb-3 border-bottom pb-2">
-                <i class="bi bi-clock-history text-primary me-2"></i>Status History
-            </h3>
+            <h2 class="h6 fw-bold mb-3 pb-2 border-bottom">Workflow Status</h2>
+            <div class="vstack gap-2 small">
+                <div class="p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="fw-semibold text-dark">1. Pinpointed &amp; Submitted</div>
+                        <div class="text-secondary">{{ report.submission_timestamp|format_datetime }}</div>
+                    </div>
+                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                </div>
+                <div class="p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="fw-semibold text-dark">2. Visible on Shared GIS Map</div>
+                        <div class="text-secondary">Viewed by Personnel &amp; Administrators</div>
+                    </div>
+                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                </div>
+                <div class="p-3 rounded-3 border {% if report.is_addressed %}bg-light{% else %}bg-white{% endif %} d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="fw-semibold text-dark">3. Marked Cleaned or Collected</div>
+                        <div class="text-secondary">
+                            {% if report.is_addressed %}
+                                Marked as <strong>{{ report.current_status }}</strong> ({{ report.resolved_timestamp|format_datetime }})
+                            {% else %}
+                                Pending action by garbage collection personnel
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if report.is_addressed %}
+                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                    {% else %}
+                        <i class="bi bi-hourglass-split text-warning fs-5"></i>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="eco-card p-4">
+            <h2 class="h6 fw-bold mb-3 pb-2 border-bottom">Recorded Status History</h2>
 
             <div class="eco-timeline">
                 {% for h in report.status_history %}
-                <div class="timeline-step {% if h.new_status == 'Completed' %}completed{% elif h.new_status == 'Rejected' %}rejected{% endif %}">
+                <div class="timeline-step {% if h.new_status in ['Collected', 'Cleaned'] %}completed{% endif %}">
                     <div class="timeline-step-dot"></div>
                     <div class="d-flex justify-content-between align-items-baseline">
                         <span class="badge {{ h.new_status|status_badge_class }} mb-1">{{ h.new_status }}</span>
-                        <span class="text-muted" style="font-size: 0.72rem;">{{ h.timestamp|format_datetime }}</span>
+                        <span class="text-secondary" style="font-size: 0.72rem;">{{ h.timestamp|format_datetime }}</span>
+                    </div>
+                    <div class="small fw-semibold text-dark mt-1">
+                        {{ h.updated_by.full_name }} ({{ h.updated_by.role|capitalize }})
                     </div>
                     {% if h.note %}
-                        <div class="small text-dark mt-1 p-2 bg-light rounded border">
+                        <div class="small text-secondary mt-1 p-2 bg-light rounded-3 border">
                             {{ h.note }}
                         </div>
                     {% endif %}
@@ -171,21 +152,6 @@
                 {% endfor %}
             </div>
         </div>
-
-        {% if report.task_assignment %}
-        <div class="eco-card p-4">
-            <h3 class="h6 fw-bold mb-2 border-bottom pb-2"><i class="bi bi-truck text-warning me-2"></i>Assigned Crew</h3>
-            <div class="small">
-                <div class="mb-1"><strong>Personnel:</strong> {{ report.task_assignment.personnel.full_name }}</div>
-                <div class="mb-1"><strong>Priority:</strong> <span class="badge {{ report.task_assignment.get_priority_badge() }}">{{ report.task_assignment.priority }}</span></div>
-                {% if report.task_assignment.collection_timestamp %}
-                    <div class="text-success fw-bold mt-2">
-                        <i class="bi bi-check-circle-fill me-1"></i>Collected at {{ report.task_assignment.collection_timestamp|format_datetime }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
@@ -193,12 +159,13 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const lat = {{ report.latitude }};
-        const lng = {{ report.longitude }};
-        const trackingCode = "{{ report.tracking_code }}";
-        const status = "{{ report.current_status }}";
-
-        EcoGIS.initDetailMap('detailMap', lat, lng, trackingCode, status);
+        EcoGIS.initDetailMap(
+            'detailMap',
+            {{ report.latitude }},
+            {{ report.longitude }},
+            "{{ report.tracking_code }}",
+            "{{ report.current_status }}"
+        );
     });
 </script>
 {% endblock %}

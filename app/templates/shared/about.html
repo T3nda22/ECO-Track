@@ -1,101 +1,129 @@
 {% extends "shared/base.html" %}
 
-{% block title %}About ECO TRACK - BSIT Capstone Project | Poblacion, Minglanilla, Cebu{% endblock %}
+{% block title %}Research Background, Literature Synthesis & Scope | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <div class="col-lg-8">
+        <!-- Deliverable 1: The Problem and Its Background -->
         <div class="eco-card p-4 mb-4">
-            <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);">
-                <i class="bi bi-mortarboard-fill text-success"></i>
-                <span class="small fw-bold text-success text-uppercase">Academic BSIT Capstone Project</span>
+            <div class="eyebrow-badge mb-3">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <span>Deliverable No. 1 &amp; Deliverable No. 2</span>
             </div>
-            <h2 class="h3 fw-bold mb-3">ECO TRACK: GIS-Based Waste Management System</h2>
-            <h3 class="h6 text-muted mb-4">Exclusively Serving Barangay Poblacion, Minglanilla, Cebu, Philippines</h3>
-
-            <p>
-                <strong>ECO TRACK</strong> is an academic Bachelor of Science in Information Technology (BSIT) capstone project developed to modernize and enhance municipal solid waste reporting and collection coordination in <strong>Barangay Poblacion, Minglanilla, Cebu</strong>.
-            </p>
-            <p>
-                The system integrates interactive Geographic Information System (GIS) mapping to bridge communication between local residents, municipal waste managers, and field garbage collection crews. Residents can pinpoint the exact geographic location of overflowing, stacked, or uncollected garbage bins, while administrators can review, verify, and dispatch tasks to personnel with full audit logging and proof-of-collection confirmation.
+            <h1 class="h3 fw-bold mb-2">A Proposed Waste Management System for Minglanilla, Cebu</h1>
+            <p class="text-secondary small mb-3">
+                Community Reporting System with Geographic Information System (GIS) Visualization &bull; Piloted in Minglanilla Poblacion
             </p>
 
-            <h4 class="h5 fw-bold mt-4 mb-3 border-bottom pb-2">Geographical Service Boundary Specification</h4>
-            <div class="alert alert-secondary py-2 small mb-3">
-                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
-                <strong>Service Area Scope:</strong> The application exclusively operates within the perimeter of <strong>Barangay Poblacion (covering Wards 1, 2, 3, and 4)</strong> in Minglanilla, Cebu.
-            </div>
-            <p class="small text-muted">
-                In strict adherence to the project specification:
-                <em>"Use a verified geographical boundary for Poblacion, Minglanilla, when reliable boundary data is available. Do not invent geographic boundaries. If verified boundary data is unavailable, label the service area as approximate until verified. Validate submitted coordinates against the defined service area on the server, not only in the browser."</em>
-            </p>
-            <p class="small text-muted">
-                The service boundary demarcated on the interactive map encompasses the central administrative, commercial, and coastal sectors of Poblacion, Minglanilla, bounded by the Bohol Strait to the east, Tulay to the north, and Calajo-an to the south. Coordinates submitted outside this polygon are automatically rejected by server-side validation.
+            <p class="text-secondary small mb-4">
+                In Minglanilla, Cebu, effective waste management requires timely information about the location and condition of waste bins and areas that require waste collection. This system computerizes and improves the process of reporting, locating, monitoring, and managing waste collection concerns using <strong>Geographic Information System (GIS)</strong> technology.
             </p>
 
-            <h4 class="h5 fw-bold mt-4 mb-3 border-bottom pb-2">Key Administrative Landmarks in Poblacion</h4>
-            <div class="row g-2">
-                {% for lm in landmarks %}
+            <h2 class="h5 fw-bold mb-3 pb-2 border-bottom">Review of Related Literature &amp; Synthesis</h2>
+            <p class="small text-secondary mb-3">
+                The proposed system draws on three proven strands from local and foreign studies while removing dedicated hardware dependencies (such as RFID readers, GSM modules, and IoT sensors) that a barangay may not be able to procure, install, and sustain:
+            </p>
+            <div class="row g-3 small mb-4">
                 <div class="col-md-6">
-                    <div class="p-2 border rounded bg-light small">
-                        <strong><i class="bi bi-geo-fill text-success me-1"></i>{{ lm.name }}</strong>
-                        <div class="text-muted" style="font-size: 0.75rem;">Zone: {{ lm.zone }} | Lat: {{ lm.lat }}, Lng: {{ lm.lng }}</div>
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="fw-bold text-dark mb-1">Adriatico &amp; Javellana (2017) — Local</div>
+                        <div class="text-secondary">Demonstrated that geotagging pickup points and tracking garbage bin status on a web and mobile platform is feasible and acceptable in a Philippine barangay setting.</div>
                     </div>
                 </div>
-                {% endfor %}
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="fw-bold text-dark mb-1">Alvarico, Arricivita, &amp; Cruz (2024) — Local</div>
+                        <div class="text-secondary">Showed how web map visualization and location-based notifications help residents and collection personnel coordinate around waste collection.</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="fw-bold text-dark mb-1">Arebey et al. (2009) — Foreign</div>
+                        <div class="text-secondary">Integrated GIS to monitor solid waste collection operations from end to end in real time.</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="fw-bold text-dark mb-1">Draz et al. (2017) — Foreign</div>
+                        <div class="text-secondary">Established that monitoring bin status and GPS coordinates and alerting authorities when bins are full enables timely collection action.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-3 border" style="background: var(--brand-50); border-color: var(--brand-200) !important;">
+                <div class="fw-bold text-dark small mb-1"><i class="bi bi-check2-circle text-success me-1"></i>Research Gap Addressed</div>
+                <div class="small text-secondary">
+                    Existing prototypes rely on dedicated IoT/RFID hardware and do not collect observations directly from residents. This software-only platform turns community observation into location-tagged, map-based waste reports: residents pinpoint full bins on a GIS map, administrators and garbage collection personnel view these reports as markers on the same map, and personnel mark reported bins as <strong>Cleaned</strong> or <strong>Collected</strong> so administrators can monitor which concerns remain <strong>Outstanding</strong>.
+                </div>
             </div>
         </div>
 
+        <!-- Scope and Limitations -->
         <div class="eco-card p-4">
-            <h4 class="h5 fw-bold mb-3 border-bottom pb-2">Technology Stack Architecture</h4>
-            <div class="row g-3 small">
+            <h2 class="h5 fw-bold mb-3 pb-2 border-bottom">Scope and Limitations</h2>
+            <div class="row g-4 small">
                 <div class="col-md-6">
-                    <h6 class="fw-bold text-dark"><i class="bi bi-code-square text-primary me-1"></i>Backend</h6>
-                    <ul class="list-unstyled text-muted ps-2">
-                        <li><strong>Language:</strong> Python 3</li>
-                        <li><strong>Web Framework:</strong> Flask</li>
-                        <li><strong>Authentication:</strong> Flask-Login (session-based)</li>
-                        <li><strong>ORM:</strong> Flask-SQLAlchemy (MySQL & SQLite)</li>
-                        <li><strong>Forms & CSRF:</strong> Flask-WTF</li>
+                    <h3 class="h6 fw-bold text-success mb-2"><i class="bi bi-check-circle me-1"></i>Project Scope</h3>
+                    <ul class="ps-3 text-secondary mb-0">
+                        <li class="mb-2"><strong class="text-dark">Resident Map Reporting:</strong> Reporting of waste concerns by residents, who pinpoint the location of full garbage bins on a map.</li>
+                        <li class="mb-2"><strong class="text-dark">Recording of Waste Information:</strong> Recording of report location, photo, time submitted, and status.</li>
+                        <li class="mb-2"><strong class="text-dark">Shared GIS Map Visualization:</strong> Viewing of reported bins as markers on a GIS-based map by administrators and garbage collection personnel.</li>
+                        <li class="mb-2"><strong class="text-dark">Personnel Status Updates:</strong> Updating of report status by garbage collection personnel to mark bins as <strong>Cleaned</strong> or <strong>Collected</strong>.</li>
+                        <li class="mb-2"><strong class="text-dark">Administrator Monitoring:</strong> Monitoring of concerns by administrators, covering which reports remain <strong>Outstanding</strong> and which have been <strong>Addressed</strong>.</li>
+                        <li><strong class="text-dark">Geographical Coverage:</strong> Limited to the Municipality of Minglanilla, Cebu (piloted in Minglanilla Poblacion).</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <h6 class="fw-bold text-dark"><i class="bi bi-display text-success me-1"></i>Frontend & GIS</h6>
-                    <ul class="list-unstyled text-muted ps-2">
-                        <li><strong>Styling:</strong> Bootstrap 5 & Custom CSS</li>
-                        <li><strong>GIS Mapping:</strong> Leaflet.js</li>
-                        <li><strong>Tile Provider:</strong> OpenStreetMap</li>
-                        <li><strong>Spatial Validation:</strong> Ray-casting Point-in-Polygon</li>
-                        <li><strong>Icons:</strong> Bootstrap Icons</li>
+                    <h3 class="h6 fw-bold text-danger mb-2"><i class="bi bi-dash-circle me-1"></i>Project Limitations</h3>
+                    <ul class="ps-3 text-secondary mb-0">
+                        <li class="mb-2">Does not physically collect, transport, segregate, process, recycle, or dispose of garbage.</li>
+                        <li class="mb-2">Does not manage garbage trucks, collection equipment, or other physical waste management resources.</li>
+                        <li class="mb-2">Does not integrate with sensor or IoT hardware for automatic bin fill-level detection; fullness is reported manually by users.</li>
+                        <li class="mb-2">Cannot independently verify the accuracy of user-submitted reports.</li>
+                        <li class="mb-2">Requires an internet connection to use.</li>
+                        <li>Does not cover areas outside the Municipality of Minglanilla, Cebu.</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Right Column: Landmarks & Stakeholders -->
     <div class="col-lg-4">
         <div class="eco-card p-4 mb-4">
-            <h5 class="fw-bold mb-3"><i class="bi bi-shield-exclamation text-warning me-2"></i>Capstone Project Disclaimers</h5>
-            <ul class="small text-muted ps-3 mb-3">
-                <li class="mb-2"><strong>Academic Demonstration:</strong> This system is an academic BSIT capstone project and is not currently deployed as the official software of the Municipality of Minglanilla or Barangay Poblacion.</li>
-                <li class="mb-2"><strong>Realistic Sample Data:</strong> Operational reports and user accounts shown for demonstration purposes represent realistic local scenarios within Poblacion, Minglanilla.</li>
-                <li class="mb-2"><strong>No GPS Truck Tracking Claim:</strong> In accordance with technical integrity guidelines, real garbage trucks are not claimed to be GPS-tracked. The map pins represent manually pinpointed waste problem coordinates.</li>
-            </ul>
+            <h2 class="h6 fw-bold text-uppercase text-secondary mb-3" style="letter-spacing: 0.04em;">Intended Users &amp; Beneficiaries</h2>
+            <div class="mb-3 pb-3 border-bottom">
+                <div class="fw-bold text-dark small mb-1">1. Residents / Community Members</div>
+                <p class="small text-secondary mb-0">
+                    Pinpoint on a map the location of garbage bins that are full and in need of cleaning or collection, and submit reports with photos.
+                </p>
+            </div>
+            <div class="mb-3 pb-3 border-bottom">
+                <div class="fw-bold text-dark small mb-1">2. Waste Management Personnel</div>
+                <p class="small text-secondary mb-0">
+                    View submitted reports as markers on the GIS-based map to identify areas requiring attention, and mark reported bins as <strong>Cleaned</strong> or <strong>Collected</strong>.
+                </p>
+            </div>
+            <div>
+                <div class="fw-bold text-dark small mb-1">3. Local Government / Administrators</div>
+                <p class="small text-secondary mb-0">
+                    View reported bins on the same GIS-based map and monitor which waste-related concerns have been <strong>Addressed</strong> and which remain <strong>Outstanding</strong>.
+                </p>
+            </div>
         </div>
 
         <div class="eco-card p-4">
-            <h5 class="fw-bold mb-3"><i class="bi bi-person-badge text-primary me-2"></i>User Roles</h5>
-            <div class="mb-3 pb-2 border-bottom">
-                <span class="badge bg-success">Role A: Resident</span>
-                <p class="small text-muted mt-1 mb-0">Submits waste reports with map pins, tracks collection timeline, receives notifications.</p>
-            </div>
-            <div class="mb-3 pb-2 border-bottom">
-                <span class="badge bg-danger">Role B: Administrator</span>
-                <p class="small text-muted mt-1 mb-0">Verifies reports, assigns tasks to personnel, manages schedules, confirms completion.</p>
-            </div>
-            <div>
-                <span class="badge bg-warning text-dark">Role C: Collection Personnel</span>
-                <p class="small text-muted mt-1 mb-0">Views assigned task queue, updates progress, uploads clearance proof photos.</p>
+            <h2 class="h6 fw-bold text-uppercase text-secondary mb-3" style="letter-spacing: 0.04em;">
+                Minglanilla Poblacion Reference Landmarks
+            </h2>
+            <div class="vstack gap-2 small">
+                {% for lm in landmarks %}
+                <div class="p-2 border rounded-3 bg-light">
+                    <div class="fw-semibold text-dark">{{ lm.name }}</div>
+                    <div class="text-secondary font-monospace" style="font-size: 0.75rem;">{{ lm.zone }} &bull; {{ lm.lat }}, {{ lm.lng }}</div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

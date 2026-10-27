@@ -1,36 +1,36 @@
 {% extends "shared/base.html" %}
 
-{% block title %}My Notifications - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+{% block title %}Notifications | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="eco-card p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
                 <div>
-                    <h1 class="h4 fw-bold mb-1"><i class="bi bi-bell-fill text-primary me-2"></i>In-App Notifications</h1>
-                    <p class="text-muted small mb-0">Updates on report verification, task assignments, and completed collections.</p>
+                    <h1 class="h4 fw-bold mb-1">Notifications</h1>
+                    <p class="text-secondary small mb-0">Status updates when your reported garbage bins are marked as Cleaned or Collected.</p>
                 </div>
-                <span class="badge bg-primary">{{ notifications|length }} Total</span>
+                <span class="badge bg-light text-dark border">{{ notifications|length }} Total</span>
             </div>
 
-            <div class="list-group list-group-flush">
+            <div class="vstack gap-2">
                 {% for n in notifications %}
-                <div class="list-group-item px-3 py-3 border-bottom mb-2 rounded bg-light">
+                <div class="p-3 rounded-3 bg-light border">
                     <div class="d-flex w-100 justify-content-between align-items-center mb-1">
-                        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-info-circle-fill text-success me-2"></i>{{ n.title }}</h6>
-                        <small class="text-muted">{{ n.created_timestamp|format_datetime }}</small>
+                        <h6 class="mb-0 fw-bold text-dark small">{{ n.title }}</h6>
+                        <small class="text-secondary">{{ n.created_timestamp|format_datetime }}</small>
                     </div>
-                    <p class="mb-2 text-muted small">{{ n.notification_message }}</p>
+                    <p class="mb-2 text-secondary small">{{ n.notification_message }}</p>
                     {% if n.related_report_id %}
-                        <a href="{{ url_for('resident.track_report', report_id=n.related_report_id) }}" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 0.75rem;">
-                            <i class="bi bi-search me-1"></i>View Waste Report
+                        <a href="{{ url_for('resident.track_report', report_id=n.related_report_id) }}" class="btn btn-xs btn-outline-secondary">
+                            View Report Details
                         </a>
                     {% endif %}
                 </div>
                 {% else %}
-                <div class="text-center py-5 text-muted">
-                    <i class="bi bi-bell-slash fs-1 d-block mb-2 text-muted"></i>
+                <div class="text-center py-5 text-secondary">
+                    <i class="bi bi-bell-slash fs-2 d-block mb-2 opacity-50"></i>
                     You have no notifications yet.
                 </div>
                 {% endfor %}

@@ -1,0 +1,8 @@
+[build]
+  publish = "netlify_dist"
+  command = "echo 'ECO TRACK Netlify build ready'"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

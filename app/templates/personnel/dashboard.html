@@ -1,111 +1,165 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Collection Personnel Dashboard - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+{% block title %}Collection Personnel Dashboard | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
-    <!-- Header -->
+    <!-- Clean Page Header -->
     <div class="col-12">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #b45309 100%);">
+        <div class="page-header-banner d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
-                <div class="badge bg-warning text-dark mb-2">
-                    <i class="bi bi-truck me-1"></i> Field Operations Portal
+                <div class="eyebrow-badge amber mb-2">
+                    <i class="bi bi-truck"></i>
+                    <span>Garbage Collection Personnel &bull; Minglanilla Poblacion</span>
                 </div>
-                <h1 class="h3 fw-bold mb-1">Collector Dashboard: {{ current_user.full_name }}</h1>
-                <p class="text-white-50 mb-0 small">
-                    <i class="bi bi-geo-alt-fill text-warning me-1"></i> Assigned Territory: <strong>Barangay Poblacion (Wards 1–4), Minglanilla, Cebu</strong>
+                <h1 class="h3 fw-bold mb-1">{{ current_user.full_name }}</h1>
+                <p class="text-secondary small mb-0">
+                    View resident-reported bins as markers on the shared GIS map and mark reported bins as <strong>Cleaned</strong> or <strong>Collected</strong>.
                 </p>
             </div>
             <div class="d-flex gap-2">
-                <a href="{{ url_for('personnel.route_map') }}" class="btn btn-warning text-dark fw-bold shadow-sm">
-                    <i class="bi bi-geo-alt-fill me-1"></i>Open Assigned Route Map
+                <a href="{{ url_for('personnel.route_map') }}" class="btn btn-brand d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-pin-map-fill"></i>
+                    <span>Open Shared GIS Map</span>
                 </a>
-                <a href="{{ url_for('personnel.tasks') }}" class="btn btn-outline-light fw-bold">
-                    <i class="bi bi-list-task me-1"></i>View All Tasks
+                <a href="{{ url_for('personnel.tasks') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-list-check"></i>
+                    <span>All Reported Bins</span>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- 4 Collector Metric KPI Cards -->
+    <!-- 4 Modern KPI Cards -->
     <div class="col-md-3 col-6">
-        <div class="eco-card p-3 border-start border-4 border-warning">
-            <div class="text-muted small fw-semibold">PENDING DISPATCH</div>
-            <div class="h3 fw-bold mb-0 text-warning">{{ assigned_count }}</div>
-            <div class="small text-muted">Awaiting collection start</div>
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Outstanding Bins</div>
+                <div class="kpi-value text-warning">{{ outstanding_count }}</div>
+                <div class="kpi-subtext">Needs cleaning or collection</div>
+            </div>
+            <div class="kpi-icon-box amber">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="eco-card p-3 border-start border-4 border-info">
-            <div class="text-muted small fw-semibold">IN PROGRESS</div>
-            <div class="h3 fw-bold mb-0 text-info">{{ in_progress_count }}</div>
-            <div class="small text-muted">Currently being collected</div>
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Marked Collected</div>
+                <div class="kpi-value text-success">{{ collected_count }}</div>
+                <div class="kpi-subtext">Bins emptied / collected</div>
+            </div>
+            <div class="kpi-icon-box emerald">
+                <i class="bi bi-check2-circle"></i>
+            </div>
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="eco-card p-3 border-start border-4" style="border-left-color: #14b8a6 !important;">
-            <div class="text-muted small fw-semibold">COLLECTED (PENDING REVIEW)</div>
-            <div class="h3 fw-bold mb-0" style="color: #0d9488;">{{ collected_count }}</div>
-            <div class="small text-muted">Proof uploaded to admin</div>
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Marked Cleaned</div>
+                <div class="kpi-value" style="color: var(--teal-600);">{{ cleaned_count }}</div>
+                <div class="kpi-subtext">Bins &amp; areas cleaned</div>
+            </div>
+            <div class="kpi-icon-box teal">
+                <i class="bi bi-stars"></i>
+            </div>
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="eco-card p-3 border-start border-4 border-success">
-            <div class="text-muted small fw-semibold">COMPLETED</div>
-            <div class="h3 fw-bold mb-0 text-success">{{ completed_count }}</div>
-            <div class="small text-muted">Fully verified collections</div>
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Total Reports</div>
+                <div class="kpi-value">{{ total_reports }}</div>
+                <div class="kpi-subtext">All Poblacion reports</div>
+            </div>
+            <div class="kpi-icon-box slate">
+                <i class="bi bi-layers"></i>
+            </div>
         </div>
     </div>
 
-    <!-- Active Tasks Queue (Urgent first) -->
-    <div class="col-lg-7">
-        <div class="eco-card p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-                <h2 class="h5 fw-bold mb-0 text-dark">
-                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>Active Task Queue ({{ active_tasks|length }})
-                </h2>
-                <a href="{{ url_for('personnel.tasks') }}" class="btn btn-sm btn-outline-secondary">All Tasks</a>
+    <!-- Shared GIS Map on Personnel Dashboard -->
+    <div class="col-lg-6">
+        <div class="eco-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <div>
+                    <h2 class="h6 fw-bold mb-0">Shared GIS-Based Waste Map</h2>
+                    <div class="text-secondary small">Click any marker to inspect photo and mark as Cleaned or Collected.</div>
+                </div>
+                <a href="{{ url_for('personnel.route_map') }}" class="btn btn-sm btn-outline-secondary">
+                    Full Map
+                </a>
+            </div>
+
+            <div id="collectorDashboardMap" class="eco-map-container" style="height: 410px;"></div>
+        </div>
+    </div>
+
+    <!-- Outstanding Reported Bins Ready for Collection / Cleaning -->
+    <div class="col-lg-6">
+        <div class="eco-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <div>
+                    <h2 class="h6 fw-bold mb-0">Outstanding Reported Bins ({{ outstanding_count }})</h2>
+                    <div class="text-secondary small">Mark reported bins as Cleaned or Collected once attended to.</div>
+                </div>
+                <a href="{{ url_for('personnel.tasks', status='Outstanding') }}" class="btn btn-sm btn-outline-secondary">View All</a>
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle">
+                    <thead>
                         <tr>
-                            <th>Priority</th>
-                            <th>Tracking ID</th>
-                            <th>Location in Poblacion</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Code</th>
+                            <th>Reported Bin &amp; Location</th>
+                            <th>Mark Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for t in active_tasks %}
+                        {% for r in outstanding_reports[:8] %}
                         <tr>
                             <td>
-                                <span class="badge {{ t.get_priority_badge() }}">{{ t.priority }}</span>
-                            </td>
-                            <td>
-                                <span class="fw-bold font-monospace text-primary">{{ t.report.tracking_code }}</span>
-                                <div class="text-muted" style="font-size: 0.72rem;">{{ t.report.waste_category }}</div>
-                            </td>
-                            <td>
-                                <div class="small fw-semibold text-dark">{{ t.report.location_description }}</div>
-                                <div class="text-muted font-monospace" style="font-size: 0.72rem;">{{ t.report.latitude }}, {{ t.report.longitude }}</div>
-                            </td>
-                            <td>
-                                <span class="badge {{ t.task_status|status_badge_class }}">{{ t.task_status }}</span>
-                            </td>
-                            <td>
-                                <a href="{{ url_for('personnel.task_detail', assignment_id=t.id) }}" class="btn btn-sm btn-warning text-dark fw-bold">
-                                    <i class="bi bi-geo-alt me-1"></i>Attend Task
+                                <a href="{{ url_for('personnel.task_detail', report_id=r.id) }}" class="fw-semibold font-monospace text-dark text-decoration-none">
+                                    {{ r.tracking_code }}
                                 </a>
+                                <div class="text-secondary" style="font-size: 0.72rem;">{{ r.submission_timestamp|format_datetime }}</div>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ r.title }}</div>
+                                <div class="small text-secondary"><i class="bi bi-geo-alt text-danger me-1"></i>{{ r.location_description }}</div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1 justify-content-end">
+                                    <form method="POST" action="{{ url_for('personnel.quick_mark_report', report_id=r.id) }}" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="status" value="Collected">
+                                        <button type="submit" class="btn btn-xs btn-brand">
+                                            Collected
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('personnel.quick_mark_report', report_id=r.id) }}" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="status" value="Cleaned">
+                                        <button type="submit" class="btn btn-xs btn-outline-secondary">
+                                            Cleaned
+                                        </button>
+                                    </form>
+                                    <a href="{{ url_for('personnel.task_detail', report_id=r.id) }}" class="btn btn-xs btn-outline-secondary">
+                                        Open
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-5">
-                                <i class="bi bi-check2-circle fs-2 text-success d-block mb-2"></i>
-                                Great job! No active tasks currently awaiting collection.
+                            <td colspan="3" class="text-center py-5">
+                                <div class="kpi-icon-box emerald mx-auto mb-2">
+                                    <i class="bi bi-check2-all"></i>
+                                </div>
+                                <div class="fw-semibold text-dark">All reported bins addressed</div>
+                                <div class="small text-secondary">No outstanding bins currently awaiting collection or cleaning.</div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -114,26 +168,12 @@
             </div>
         </div>
     </div>
-
-    <!-- Right: Route Map Preview -->
-    <div class="col-lg-5">
-        <div class="eco-card p-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h3 class="h6 fw-bold mb-0"><i class="bi bi-map-fill text-warning me-2"></i>Assigned Territory Overview</h3>
-                <a href="{{ url_for('personnel.route_map') }}" class="small text-decoration-none">Full Screen Map</a>
-            </div>
-            <p class="text-muted small mb-3">Poblacion operational boundary and assigned collection pins.</p>
-
-            <div id="collectorDashboardMap" class="eco-map-container map-sm"></div>
-        </div>
-    </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialize personnel map showing only their assigned reports
         EcoGIS.initReportsMap('collectorDashboardMap', {
             initialStatus: 'all',
             role: 'personnel'

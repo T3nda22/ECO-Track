@@ -1,152 +1,171 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Administrator Operations Dashboard - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+{% block title %}Administrator Monitoring Dashboard | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
-    <!-- Header -->
+    <!-- Clean Page Header -->
     <div class="col-12">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #991b1b 100%);">
+        <div class="page-header-banner d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
-                <div class="badge bg-danger-subtle text-danger border border-danger-subtle mb-2">
-                    <i class="bi bi-shield-lock-fill me-1"></i> Municipal Waste Operations Control
+                <div class="eyebrow-badge slate mb-2">
+                    <i class="bi bi-shield-check"></i>
+                    <span>System Administrator Monitoring &bull; Minglanilla Poblacion</span>
                 </div>
-                <h1 class="h3 fw-bold mb-1">Administrator Dashboard</h1>
-                <p class="text-white-50 mb-0 small">
-                    <i class="bi bi-geo-alt-fill text-success me-1"></i> Exclusively Serving: <strong>Barangay Poblacion, Minglanilla, Cebu</strong>
+                <h1 class="h3 fw-bold mb-1">Waste Concerns Monitoring Dashboard</h1>
+                <p class="text-secondary small mb-0">
+                    View reported garbage bins as markers on the shared GIS map and monitor which concerns remain <strong>Outstanding</strong> and which have been <strong>Addressed</strong>.
                 </p>
             </div>
             <div class="d-flex gap-2">
-                <a href="{{ url_for('admin.centralized_map') }}" class="btn btn-info fw-bold shadow-sm">
-                    <i class="bi bi-map-fill me-1"></i>Full Centralized Map
+                <a href="{{ url_for('admin.centralized_map') }}" class="btn btn-brand d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-pin-map-fill"></i>
+                    <span>Open GIS Monitoring Map</span>
                 </a>
-                <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-light fw-bold">
-                    <i class="bi bi-card-checklist me-1"></i>Manage Reports
+                <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-list-check"></i>
+                    <span>Monitor All Concerns</span>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- 8 Workflow KPI Metric Cards -->
-    <div class="col-lg-3 col-sm-6">
-        <div class="eco-card p-3 border-start border-4 border-primary">
-            <div class="text-muted small fw-semibold">TOTAL REPORTS</div>
-            <div class="h3 fw-bold mb-0 text-dark">{{ total_reports }}</div>
-            <div class="small text-muted">All Poblacion submissions</div>
+    <!-- 6 Modern KPI Cards -->
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Total Reports</div>
+                <div class="kpi-value">{{ total_reports }}</div>
+                <div class="kpi-subtext">Submitted concerns</div>
+            </div>
+            <div class="kpi-icon-box slate">
+                <i class="bi bi-layers"></i>
+            </div>
         </div>
     </div>
-    <div class="col-lg-3 col-sm-6">
-        <div class="eco-card p-3 border-start border-4 border-warning">
-            <div class="text-muted small fw-semibold">PENDING REVIEW</div>
-            <div class="h3 fw-bold mb-0 text-warning">{{ pending_count }}</div>
-            <div class="small text-muted">Require admin verification</div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Outstanding</div>
+                <div class="kpi-value text-warning">{{ outstanding_count }}</div>
+                <div class="kpi-subtext">Pending action</div>
+            </div>
+            <div class="kpi-icon-box amber">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
         </div>
     </div>
-    <div class="col-lg-3 col-sm-6">
-        <div class="eco-card p-3 border-start border-4 border-info">
-            <div class="text-muted small fw-semibold">VERIFIED & ASSIGNED</div>
-            <div class="h3 fw-bold mb-0 text-info">{{ verified_count + assigned_count }}</div>
-            <div class="small text-muted">Ready for / in dispatch</div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Addressed</div>
+                <div class="kpi-value text-success">{{ addressed_count }}</div>
+                <div class="kpi-subtext">Cleaned or collected</div>
+            </div>
+            <div class="kpi-icon-box emerald">
+                <i class="bi bi-check2-all"></i>
+            </div>
         </div>
     </div>
-    <div class="col-lg-3 col-sm-6">
-        <div class="eco-card p-3 border-start border-4 border-cyan" style="border-left-color: #06b6d4 !important;">
-            <div class="text-muted small fw-semibold">IN PROGRESS</div>
-            <div class="h3 fw-bold mb-0" style="color: #0891b2;">{{ in_progress_count }}</div>
-            <div class="small text-muted">Active field collection</div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Collected</div>
+                <div class="kpi-value text-success">{{ collected_count }}</div>
+                <div class="kpi-subtext">Marked Collected</div>
+            </div>
+            <div class="kpi-icon-box emerald">
+                <i class="bi bi-truck"></i>
+            </div>
         </div>
     </div>
-    <div class="col-lg-3 col-sm-6">
-        <div class="eco-card p-3 border-start border-4" style="border-left-color: #14b8a6 !important;">
-            <div class="text-muted small fw-semibold">COLLECTED (AWAITING CONFIRMATION)</div>
-            <div class="h3 fw-bold mb-0" style="color: #0d9488;">{{ collected_count }}</div>
-            <div class="small text-muted">Proof uploaded by collector</div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Cleaned</div>
+                <div class="kpi-value" style="color: var(--teal-600);">{{ cleaned_count }}</div>
+                <div class="kpi-subtext">Marked Cleaned</div>
+            </div>
+            <div class="kpi-icon-box teal">
+                <i class="bi bi-stars"></i>
+            </div>
         </div>
     </div>
-    <div class="col-lg-3 col-sm-6">
-        <div class="eco-card p-3 border-start border-4 border-success">
-            <div class="text-muted small fw-semibold">COMPLETED</div>
-            <div class="h3 fw-bold mb-0 text-success">{{ completed_count }}</div>
-            <div class="small text-muted">Confirmed cleared</div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-sm-6">
-        <div class="eco-card p-3 border-start border-4 border-danger">
-            <div class="text-muted small fw-semibold">REJECTED</div>
-            <div class="h3 fw-bold mb-0 text-danger">{{ rejected_count }}</div>
-            <div class="small text-muted">Out-of-scope or duplicate</div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-sm-6">
-        <div class="eco-card p-3 border-start border-4 border-secondary">
-            <div class="text-muted small fw-semibold">ACTIVE PERSONNEL</div>
-            <div class="h3 fw-bold mb-0 text-dark">{{ personnel_users|length }}</div>
-            <div class="small text-muted">Authorized collection staff</div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-label">Addressed Rate</div>
+                <div class="kpi-value">{{ resolution_rate }}%</div>
+                <div class="kpi-subtext">{{ personnel_users|length }} active personnel</div>
+            </div>
+            <div class="kpi-icon-box blue">
+                <i class="bi bi-pie-chart"></i>
+            </div>
         </div>
     </div>
 
-    <!-- Centralized GIS Operations Map -->
+    <!-- Shared GIS-Based Monitoring Map -->
     <div class="col-12">
         <div class="eco-card p-4">
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
                 <div>
                     <h2 class="h5 fw-bold mb-1">
-                        <i class="bi bi-map-fill text-danger me-2"></i>Poblacion Centralized GIS Operations Map
+                        GIS-Based Waste Monitoring Map
                     </h2>
-                    <p class="text-muted small mb-0">
-                        Interactive map displaying all active and completed waste pins in <strong>Barangay Poblacion, Minglanilla</strong> with status-coded markers.
+                    <p class="text-secondary small mb-0">
+                        Shared GIS map displaying all resident-reported bins across Minglanilla Poblacion: <strong>Outstanding (Pending)</strong> vs. <strong>Addressed (Cleaned / Collected)</strong>.
                     </p>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="{{ url_for('admin.centralized_map') }}" class="btn btn-sm btn-outline-danger">
+                    <a href="{{ url_for('admin.centralized_map') }}" class="btn btn-sm btn-outline-secondary">
                         <i class="bi bi-arrows-fullscreen me-1"></i>Open Full Map with Filters
                     </a>
                 </div>
             </div>
 
-            <!-- Leaflet Container -->
-            <div id="adminDashboardMap" class="eco-map-container" style="height: 480px;"></div>
+            <div id="adminDashboardMap" class="eco-map-container" style="height: 450px;"></div>
         </div>
     </div>
 
-    <!-- Two Critical Workflow Tables: Pending Review & Collected Awaiting Confirmation -->
+    <!-- Side-by-Side Monitoring Tables: Outstanding Concerns vs. Addressed Concerns -->
     <div class="col-lg-6">
         <div class="eco-card p-4 h-100">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-                <h3 class="h6 fw-bold mb-0 text-warning">
-                    <i class="bi bi-exclamation-circle-fill me-1"></i> Pending Reports Awaiting Verification ({{ pending_count }})
-                </h3>
-                <a href="{{ url_for('admin.reports', status='Pending') }}" class="small text-decoration-none">View All</a>
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <div>
+                    <h3 class="h6 fw-bold mb-0">Outstanding Waste Concerns ({{ outstanding_count }})</h3>
+                    <div class="text-secondary small">Reported bins awaiting collection or cleaning</div>
+                </div>
+                <a href="{{ url_for('admin.reports', status='Outstanding') }}" class="btn btn-sm btn-outline-secondary">View All</a>
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 small">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle">
+                    <thead>
                         <tr>
                             <th>Code</th>
-                            <th>Problem & Location</th>
-                            <th>Resident</th>
-                            <th>Action</th>
+                            <th>Reported Concern &amp; Location</th>
+                            <th>Submitted</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for r in pending_reports %}
+                        {% for r in outstanding_reports %}
                         <tr>
-                            <td class="fw-bold font-monospace text-primary">{{ r.tracking_code }}</td>
+                            <td class="fw-semibold font-monospace text-dark">{{ r.tracking_code }}</td>
                             <td>
                                 <div class="fw-semibold text-dark">{{ r.title }}</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">{{ r.location_description }}</div>
+                                <div class="text-secondary small"><i class="bi bi-geo-alt text-danger me-1"></i>{{ r.location_description }}</div>
                             </td>
-                            <td>{{ r.resident.full_name }}</td>
-                            <td>
-                                <a href="{{ url_for('admin.report_detail', report_id=r.id) }}" class="btn btn-xs btn-outline-danger py-1 px-2">
-                                    Review
+                            <td class="text-secondary small">{{ r.submission_timestamp|format_datetime }}</td>
+                            <td class="text-end">
+                                <a href="{{ url_for('admin.report_detail', report_id=r.id) }}" class="btn btn-xs btn-outline-secondary">
+                                    View
                                 </a>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-3">No pending reports awaiting review.</td>
+                            <td colspan="4" class="text-center text-secondary py-5">No outstanding waste concerns remaining.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -157,38 +176,42 @@
 
     <div class="col-lg-6">
         <div class="eco-card p-4 h-100">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-                <h3 class="h6 fw-bold mb-0 text-teal" style="color: #0d9488;">
-                    <i class="bi bi-camera-fill me-1"></i> Collected Tasks Awaiting Admin Confirmation ({{ collected_count }})
-                </h3>
-                <a href="{{ url_for('admin.reports', status='Collected') }}" class="small text-decoration-none">View All</a>
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <div>
+                    <h3 class="h6 fw-bold mb-0">Recently Addressed Concerns ({{ addressed_count }})</h3>
+                    <div class="text-secondary small">Bins marked as Cleaned or Collected by personnel</div>
+                </div>
+                <a href="{{ url_for('admin.reports', status='Addressed') }}" class="btn btn-sm btn-outline-secondary">View All</a>
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 small">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle">
+                    <thead>
                         <tr>
                             <th>Code</th>
                             <th>Location</th>
-                            <th>Personnel</th>
-                            <th>Action</th>
+                            <th>Status &amp; Personnel</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for r in collected_awaiting_confirmation %}
+                        {% for r in addressed_reports %}
                         <tr>
-                            <td class="fw-bold font-monospace text-primary">{{ r.tracking_code }}</td>
-                            <td>{{ r.location_description }}</td>
-                            <td>{{ r.task_assignment.personnel.full_name if r.task_assignment else 'N/A' }}</td>
+                            <td class="fw-semibold font-monospace text-dark">{{ r.tracking_code }}</td>
+                            <td class="small text-secondary">{{ r.location_description }}</td>
                             <td>
-                                <a href="{{ url_for('admin.report_detail', report_id=r.id) }}" class="btn btn-xs btn-success py-1 px-2 fw-semibold">
-                                    <i class="bi bi-check2-circle me-1"></i>Verify Proof
+                                <span class="badge {{ r.current_status|status_badge_class }}">{{ r.current_status }}</span>
+                                <div class="text-secondary" style="font-size: 0.72rem;">by {{ r.resolved_by.full_name if r.resolved_by else 'Personnel' }}</div>
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ url_for('admin.report_detail', report_id=r.id) }}" class="btn btn-xs btn-outline-secondary">
+                                    View
                                 </a>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-3">No collections awaiting completion confirmation.</td>
+                            <td colspan="4" class="text-center text-secondary py-5">No addressed reports recorded yet.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -202,7 +225,6 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialize centralized admin map
         EcoGIS.initReportsMap('adminDashboardMap', {
             initialStatus: 'all',
             role: 'admin'

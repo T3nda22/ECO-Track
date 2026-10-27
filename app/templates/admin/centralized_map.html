@@ -1,38 +1,35 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Centralized Operations GIS Map - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+{% block title %}GIS Monitoring Map - Admin | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-3">
     <!-- Map Control & Filter Toolbar -->
     <div class="col-12">
-        <div class="eco-card p-3">
+        <div class="eco-card p-3 px-4">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                 <div>
                     <h1 class="h5 fw-bold mb-0">
-                        <i class="bi bi-map-fill text-danger me-2"></i>Centralized GIS Operations Map
+                        GIS-Based Waste Monitoring Map
                     </h1>
-                    <div class="small text-muted">
-                        Visualizing municipal waste collection pins exclusively in <strong>Barangay Poblacion (Wards 1–4), Minglanilla, Cebu</strong>.
+                    <div class="small text-secondary">
+                        Visualize reported garbage bins as markers and monitor <strong>Outstanding</strong> vs. <strong>Addressed</strong> concerns in Minglanilla Poblacion.
                     </div>
                 </div>
 
                 <!-- Live Filters -->
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     <div>
-                        <select id="mapStatusFilter" class="form-select form-select-sm" style="min-width: 150px;">
-                            <option value="all">All Statuses</option>
-                            <option value="Pending">Pending Review</option>
-                            <option value="Verified">Verified</option>
-                            <option value="Assigned">Assigned</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Collected">Collected</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Rejected">Rejected</option>
+                        <select id="mapStatusFilter" class="form-select form-select-sm" style="min-width: 210px;">
+                            <option value="all">All Markers (Outstanding &amp; Addressed)</option>
+                            <option value="Outstanding">Outstanding Only (Pending)</option>
+                            <option value="Addressed">Addressed Only (Cleaned &amp; Collected)</option>
+                            <option value="Collected">Marked as Collected</option>
+                            <option value="Cleaned">Marked as Cleaned</option>
                         </select>
                     </div>
                     <div>
-                        <select id="mapCategoryFilter" class="form-select form-select-sm" style="min-width: 170px;">
+                        <select id="mapCategoryFilter" class="form-select form-select-sm" style="min-width: 190px;">
                             <option value="all">All Waste Categories</option>
                             {% for c in categories %}
                                 <option value="{{ c }}">{{ c }}</option>
@@ -40,7 +37,7 @@
                         </select>
                     </div>
                     <button type="button" id="btnResetFilters" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                        Reset
                     </button>
                 </div>
             </div>

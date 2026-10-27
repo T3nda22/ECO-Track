@@ -1,89 +1,81 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Manage Report {{ report.tracking_code }} - Admin | ECO TRACK{% endblock %}
+{% block title %}Monitor Report {{ report.tracking_code }} - Admin | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
-    <!-- Breadcrumb & Top Bar -->
+    <!-- Top Bar -->
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-1">
+        <div class="d-flex justify-content-between align-items-center">
             <a href="{{ url_for('admin.reports') }}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Back to Reports List
+                <i class="bi bi-arrow-left me-1"></i>Back to Concerns List
             </a>
             <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small">Current Operational Status:</span>
+                <span class="text-secondary small">Monitoring Status:</span>
                 <span class="badge {{ report.current_status|status_badge_class }} fs-6 px-3 py-2">
-                    {{ report.current_status }}
+                    {{ report.current_status }} ({{ report.monitoring_state_label }})
                 </span>
             </div>
         </div>
     </div>
 
-    <!-- Left Column: Report Information, Map & Photos -->
+    <!-- Left Column: Recorded Report Information, Map & Photos -->
     <div class="col-lg-7">
         <div class="eco-card p-4 mb-4">
             <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
                 <div>
-                    <span class="text-muted small">Report Tracking ID:</span>
-                    <h1 class="h3 fw-bold font-monospace text-primary mb-1">{{ report.tracking_code }}</h1>
-                    <span class="badge bg-secondary">{{ report.waste_category }}</span>
+                    <div class="text-secondary small font-monospace mb-1">{{ report.tracking_code }}</div>
+                    <h1 class="h5 fw-bold text-dark mb-1">{{ report.title }}</h1>
+                    <span class="badge bg-light text-dark border">{{ report.waste_category }}</span>
                 </div>
-                <div class="text-end small text-muted">
-                    <div><strong>Submitted:</strong> {{ report.submission_timestamp|format_datetime }}</div>
-                    <div><strong>Last Update:</strong> {{ report.last_updated_timestamp|format_datetime }}</div>
+                <div class="text-end small text-secondary">
+                    <div><strong class="text-dark">Time Submitted:</strong> {{ report.submission_timestamp|format_datetime }}</div>
+                    <div><strong class="text-dark">Last Updated:</strong> {{ report.last_updated_timestamp|format_datetime }}</div>
                 </div>
             </div>
 
-            <h2 class="h5 fw-bold text-dark mb-2">{{ report.title }}</h2>
-            <p class="text-muted mb-3">{{ report.description }}</p>
+            <p class="text-secondary small mb-3">{{ report.description }}</p>
 
             <div class="bg-light p-3 rounded-3 mb-3 small border">
                 <div class="row g-2">
                     <div class="col-md-6">
-                        <strong><i class="bi bi-person-fill text-primary me-1"></i>Reporting Resident:</strong><br>
-                        {{ report.resident.full_name }} ({{ report.resident.email }})<br>
-                        <span class="text-muted">Tel: {{ report.resident.phone_number or 'Not provided' }}</span>
+                        <strong class="text-dark"><i class="bi bi-person text-primary me-1"></i>Reporting Resident:</strong><br>
+                        <span class="text-secondary">{{ report.resident.full_name }} ({{ report.resident.email }})</span><br>
+                        <span class="text-secondary">Tel: {{ report.resident.phone_number or 'Not provided' }}</span>
                     </div>
                     <div class="col-md-6">
-                        <strong><i class="bi bi-geo-alt-fill text-danger me-1"></i>Poblacion Location:</strong><br>
-                        {{ report.location_description }}<br>
-                        <span class="font-monospace text-muted">Lat: {{ report.latitude }}, Lng: {{ report.longitude }}</span>
+                        <strong class="text-dark"><i class="bi bi-geo-alt text-danger me-1"></i>Report Location:</strong><br>
+                        <span class="text-secondary">{{ report.location_description }}</span><br>
+                        <span class="font-monospace text-dark">Lat: {{ report.latitude }}, Lng: {{ report.longitude }}</span>
                     </div>
                 </div>
             </div>
 
-            {% if report.rejection_reason %}
-                <div class="alert alert-danger py-2 small mb-3">
-                    <strong><i class="bi bi-x-octagon-fill me-1"></i> Rejection Justification:</strong>
-                    {{ report.rejection_reason }}
-                </div>
-            {% endif %}
-
-            <!-- Photo Comparison -->
+            <!-- Photos -->
             <div class="row g-3">
                 <div class="col-md-6">
-                    <div class="border rounded p-2 text-center bg-white h-100">
-                        <div class="small fw-bold text-muted mb-2">Original Waste Condition (Reported)</div>
+                    <div class="border rounded-3 p-3 text-center bg-white h-100">
+                        <div class="small fw-semibold text-dark mb-2">Recorded Report Photo (Resident)</div>
                         {% if report.photo_reference %}
-                            <img src="{{ url_for('static', filename='uploads/reports/' + report.photo_reference) }}" class="img-fluid rounded border" style="max-height: 220px; object-fit: cover;" alt="Reported Waste">
+                            <img src="{{ url_for('static', filename='uploads/reports/' + report.photo_reference) }}" class="img-fluid rounded border" style="max-height: 210px; object-fit: cover;" alt="Reported Waste">
                         {% else %}
-                            <div class="text-muted small py-4 bg-light rounded">No photo uploaded by resident.</div>
+                            <div class="text-secondary small py-4 bg-light rounded-3">No photo uploaded by resident.</div>
                         {% endif %}
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="border rounded p-2 text-center bg-white h-100">
-                        <div class="small fw-bold text-success mb-2">Proof of Collection (Field Personnel)</div>
-                        {% if report.task_assignment and report.task_assignment.collection_proof_photo_reference %}
-                            <img src="{{ url_for('static', filename='uploads/proofs/' + report.task_assignment.collection_proof_photo_reference) }}" class="img-fluid rounded border" style="max-height: 220px; object-fit: cover;" alt="Collection Proof">
-                            {% if report.task_assignment.collection_notes %}
-                                <div class="small text-muted mt-2 text-start p-1 bg-light rounded">
-                                    <em>"{{ report.task_assignment.collection_notes }}"</em>
+                    <div class="border rounded-3 p-3 text-center bg-white h-100">
+                        <div class="small fw-semibold text-dark mb-2">Cleaned / Collected Photo (Personnel)</div>
+                        {% if report.collection_proof_photo %}
+                            <img src="{{ url_for('static', filename='uploads/proofs/' + report.collection_proof_photo) }}" class="img-fluid rounded border" style="max-height: 210px; object-fit: cover;" alt="Collection Proof">
+                            {% if report.collection_notes %}
+                                <div class="small text-secondary mt-2 text-start p-2 bg-light rounded-3 border">
+                                    "{{ report.collection_notes }}"
                                 </div>
                             {% endif %}
                         {% else %}
-                            <div class="text-muted small py-4 bg-light rounded">
-                                <i class="bi bi-camera me-1"></i> No collection proof photo uploaded yet.
+                            <div class="text-secondary small py-4 bg-light rounded-3">
+                                No collection photo attached.
                             </div>
                         {% endif %}
                     </div>
@@ -93,157 +85,65 @@
 
         <!-- GIS Location Map -->
         <div class="eco-card p-4">
-            <h3 class="h6 fw-bold mb-2"><i class="bi bi-map-fill text-danger me-2"></i>Pinpointed Waste Location in Poblacion</h3>
+            <h2 class="h6 fw-bold mb-2">Pinpointed Bin Location on GIS Map</h2>
             <div id="adminReportDetailMap" class="eco-map-container map-sm"></div>
         </div>
     </div>
 
-    <!-- Right Column: Administrative Workflow Actions & Audit Trail -->
+    <!-- Right Column: Monitoring Summary & Status History -->
     <div class="col-lg-5">
-        <!-- ACTION WORKFLOW PANEL -->
-        <div class="eco-card p-4 mb-4 border-top border-4 border-danger shadow-sm">
-            <h3 class="h5 fw-bold mb-3 border-bottom pb-2">
-                <i class="bi bi-sliders text-danger me-2"></i>Administrative Workflow Action
-            </h3>
+        <div class="eco-card p-4 mb-4">
+            <h2 class="h6 fw-bold mb-3 pb-2 border-bottom">
+                Administrator Monitoring Summary
+            </h2>
 
-            <!-- Stage 1: PENDING -> Verify or Reject -->
-            {% if report.current_status == 'Pending' %}
-                <div class="p-3 bg-light rounded-3 mb-3 border">
-                    <h4 class="h6 fw-bold text-warning mb-2"><i class="bi bi-shield-check me-1"></i>Step 1: Verification Review</h4>
-                    <p class="small text-muted mb-3">
-                        Review the coordinates and waste photo. If valid within Barangay Poblacion, verify the report to proceed to personnel assignment. If outside scope, invalid, or duplicate, reject with a recorded reason.
+            {% if report.is_outstanding %}
+                <div class="p-3 rounded-3 badge-status-pending">
+                    <div class="fw-bold mb-1"><i class="bi bi-exclamation-circle me-1"></i>Concern Remains OUTSTANDING</div>
+                    <p class="small mb-0">
+                        This reported garbage bin is currently visible as an <strong>Outstanding (Pending)</strong> marker on the shared GIS map. Once garbage collection personnel clean or collect the bin and update its status, this record will automatically transition to <strong>Addressed</strong>.
                     </p>
-
-                    <form method="POST" action="{{ url_for('admin.report_detail', report_id=report.id) }}">
-                        {{ review_form.hidden_tag() }}
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold" for="actionSelect">Decision Action</label>
-                            {{ review_form.action(class="form-select", id="actionSelect") }}
-                        </div>
-
-                        <div class="mb-3" id="rejectionReasonBox" style="display: none;">
-                            <label class="form-label small fw-semibold text-danger" for="rejectionReasonInput">Rejection Reason (Required if Rejecting)</label>
-                            {{ review_form.rejection_reason(class="form-control", rows=2, placeholder="e.g. Location is outside Barangay Poblacion / Duplicate report already handled", id="rejectionReasonInput") }}
-                        </div>
-
-                        <button type="submit" name="submit_review" class="btn btn-primary w-100 fw-bold">
-                            <i class="bi bi-check2-circle me-1"></i> Submit Verification Decision
-                        </button>
-                    </form>
                 </div>
-            {% endif %}
-
-            <!-- Stage 2: VERIFIED or ASSIGNED -> Assign / Reassign Task -->
-            {% if report.current_status in ['Verified', 'Assigned', 'In Progress'] %}
-                <div class="p-3 bg-light rounded-3 mb-3 border">
-                    <h4 class="h6 fw-bold text-primary mb-2">
-                        <i class="bi bi-truck me-1"></i>
-                        {% if report.current_status == 'Verified' %}Step 2: Assign Collection Task{% else %}Reassign Task / Modify Priority{% endif %}
-                    </h4>
-                    <p class="small text-muted mb-3">
-                        Dispatch authorized garbage collection personnel to clear this waste site in Poblacion.
-                    </p>
-
-                    <form method="POST" action="{{ url_for('admin.report_detail', report_id=report.id) }}">
-                        {{ assign_form.hidden_tag() }}
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold" for="personnelSelect">{{ assign_form.personnel_id.label.text }}</label>
-                            {{ assign_form.personnel_id(class="form-select", id="personnelSelect") }}
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold" for="prioritySelect">{{ assign_form.priority.label.text }}</label>
-                            {{ assign_form.priority(class="form-select", id="prioritySelect") }}
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold" for="instructionsText">{{ assign_form.instructions.label.text }}</label>
-                            {{ assign_form.instructions(class="form-control", rows=2, placeholder="e.g. Bring extra bin bags; commercial area crowd during morning", id="instructionsText") }}
-                        </div>
-
-                        <button type="submit" name="submit_assign" class="btn btn-warning text-dark w-100 fw-bold">
-                            <i class="bi bi-send-check me-1"></i>
-                            {% if report.current_status == 'Verified' %}Confirm Assignment{% else %}Update Assignment{% endif %}
-                        </button>
-                    </form>
-                </div>
-            {% endif %}
-
-            <!-- Stage 3: COLLECTED -> Admin Final Completion Confirmation -->
-            {% if report.current_status == 'Collected' %}
-                <div class="p-3 bg-success-subtle rounded-3 mb-3 border border-success-subtle">
-                    <h4 class="h6 fw-bold text-success mb-2">
-                        <i class="bi bi-check-circle-fill me-1"></i>Step 3: Review Clearance & Confirm Completion
-                    </h4>
-                    <p class="small text-muted mb-2">
-                        Field personnel has marked this site as <strong>Collected</strong> and submitted collection proof. Review the photo above and confirm final completion.
-                    </p>
-                    {% if report.task_assignment %}
-                        <div class="small mb-3 p-2 bg-white rounded border">
-                            <strong>Collected by:</strong> {{ report.task_assignment.personnel.full_name }}<br>
-                            <strong>Collection Time:</strong> {{ report.task_assignment.collection_timestamp|format_datetime }}<br>
-                            <strong>Personnel Remarks:</strong> {{ report.task_assignment.collection_notes or 'None' }}
-                        </div>
-                    {% endif %}
-
-                    <form method="POST" action="{{ url_for('admin.report_detail', report_id=report.id) }}">
-                        {{ confirm_form.hidden_tag() }}
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold" for="confirmNotes">Confirmation Remarks (Optional)</label>
-                            {{ confirm_form.admin_notes(class="form-control", rows=2, placeholder="e.g. Verified cleared through photo proof and ocular inspection", id="confirmNotes") }}
-                        </div>
-
-                        <button type="submit" name="submit_complete" class="btn btn-success w-100 fw-bold">
-                            <i class="bi bi-check2-all me-1"></i> Officially Confirm as COMPLETED
-                        </button>
-                    </form>
-                </div>
-            {% endif %}
-
-            <!-- Stage 4: COMPLETED or REJECTED -> Final Archived State -->
-            {% if report.current_status in ['Completed', 'Rejected'] %}
-                <div class="p-3 bg-light rounded-3 text-center border">
-                    {% if report.current_status == 'Completed' %}
-                        <i class="bi bi-check-circle-fill text-success fs-1 mb-2 d-block"></i>
-                        <h4 class="h6 fw-bold text-success">Report Officially Completed & Resolved</h4>
-                        <p class="small text-muted mb-0">This report has completed the full collection lifecycle.</p>
-                    {% else %}
-                        <i class="bi bi-x-circle-fill text-danger fs-1 mb-2 d-block"></i>
-                        <h4 class="h6 fw-bold text-danger">Report Rejected</h4>
-                        <p class="small text-muted mb-0">This report was rejected and closed.</p>
-                    {% endif %}
+            {% else %}
+                <div class="p-3 rounded-3 badge-status-completed">
+                    <div class="fw-bold mb-2"><i class="bi bi-check-circle-fill me-1"></i>Concern ADDRESSED ({{ report.current_status }})</div>
+                    <div class="small">
+                        <div class="mb-1"><strong>Status Updated To:</strong> {{ report.current_status }}</div>
+                        <div class="mb-1"><strong>Collection Personnel:</strong> {{ report.resolved_by.full_name if report.resolved_by else 'Personnel' }}</div>
+                        <div class="mb-1"><strong>Time Addressed:</strong> {{ report.resolved_timestamp|format_datetime }}</div>
+                        {% if report.collection_notes %}
+                            <div class="mt-2 p-2 bg-white text-dark rounded-3 border"><strong>Remarks:</strong> {{ report.collection_notes }}</div>
+                        {% endif %}
+                    </div>
                 </div>
             {% endif %}
         </div>
 
-        <!-- AUDIT TRAIL / STATUS HISTORY -->
+        <!-- Status History & Audit Trail -->
         <div class="eco-card p-4">
-            <h3 class="h6 fw-bold mb-3 border-bottom pb-2">
-                <i class="bi bi-shield-check text-primary me-2"></i>Status History & Audit Trail
-            </h3>
+            <h2 class="h6 fw-bold mb-3 pb-2 border-bottom">
+                Recorded Status History
+            </h2>
 
             <div class="eco-timeline">
                 {% for h in report.status_history %}
-                <div class="timeline-step {% if h.new_status == 'Completed' %}completed{% elif h.new_status == 'Rejected' %}rejected{% endif %}">
+                <div class="timeline-step {% if h.new_status in ['Collected', 'Cleaned'] %}completed{% endif %}">
                     <div class="timeline-step-dot"></div>
                     <div class="d-flex justify-content-between align-items-baseline">
                         <span class="badge {{ h.new_status|status_badge_class }} mb-1">{{ h.new_status }}</span>
-                        <span class="text-muted" style="font-size: 0.72rem;">{{ h.timestamp|format_datetime }}</span>
+                        <span class="text-secondary" style="font-size: 0.72rem;">{{ h.timestamp|format_datetime }}</span>
                     </div>
                     <div class="small fw-semibold text-dark mt-1">
-                        Updated by: {{ h.updated_by.full_name }} ({{ h.updated_by.role|capitalize }})
+                        {{ h.updated_by.full_name }} ({{ h.updated_by.role|capitalize }})
                     </div>
                     {% if h.note %}
-                        <div class="small text-muted mt-1 p-2 bg-light rounded border">
+                        <div class="small text-secondary mt-1 p-2 bg-light rounded-3 border">
                             {{ h.note }}
                         </div>
                     {% endif %}
                 </div>
                 {% else %}
-                <div class="text-muted small">No history logged.</div>
+                <div class="text-secondary small">No history logged.</div>
                 {% endfor %}
             </div>
         </div>
@@ -254,27 +154,13 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const lat = {{ report.latitude }};
-        const lng = {{ report.longitude }};
-        const trackingCode = "{{ report.tracking_code }}";
-        const status = "{{ report.current_status }}";
-
-        EcoGIS.initDetailMap('adminReportDetailMap', lat, lng, trackingCode, status);
-
-        // Toggle rejection box
-        const actionSelect = document.getElementById('actionSelect');
-        const rejectionBox = document.getElementById('rejectionReasonBox');
-        if (actionSelect && rejectionBox) {
-            function updateRejectionBox() {
-                if (actionSelect.value === 'reject') {
-                    rejectionBox.style.display = 'block';
-                } else {
-                    rejectionBox.style.display = 'none';
-                }
-            }
-            actionSelect.addEventListener('change', updateRejectionBox);
-            updateRejectionBox();
-        }
+        EcoGIS.initDetailMap(
+            'adminReportDetailMap',
+            {{ report.latitude }},
+            {{ report.longitude }},
+            "{{ report.tracking_code }}",
+            "{{ report.current_status }}"
+        );
     });
 </script>
 {% endblock %}

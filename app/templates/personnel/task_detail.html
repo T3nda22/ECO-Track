@@ -1,87 +1,84 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Manage Task {{ assignment.report.tracking_code }} - Personnel | ECO TRACK{% endblock %}
+{% block title %}Report {{ report.tracking_code }} - Mark Cleaned or Collected | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <!-- Top Bar -->
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-1">
+        <div class="d-flex justify-content-between align-items-center">
             <a href="{{ url_for('personnel.tasks') }}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Back to My Tasks
+                <i class="bi bi-arrow-left me-1"></i>Back to Reported Bins
             </a>
             <div class="d-flex align-items-center gap-2">
-                <span class="badge {{ assignment.get_priority_badge() }} px-3 py-2">
-                    Priority: {{ assignment.priority }}
-                </span>
-                <span class="badge {{ assignment.task_status|status_badge_class }} px-3 py-2 fs-6">
-                    Task Status: {{ assignment.task_status }}
+                <span class="small text-secondary">Current Status:</span>
+                <span class="badge {{ report.current_status|status_badge_class }} px-3 py-2 fs-6">
+                    {{ report.current_status }} ({{ report.monitoring_state_label }})
                 </span>
             </div>
         </div>
     </div>
 
-    <!-- Left Column: Task Info, Photos, and GIS Location -->
+    <!-- Left Column: Report Information, Photos, and GIS Location -->
     <div class="col-lg-7">
         <div class="eco-card p-4 mb-4">
             <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
                 <div>
-                    <span class="text-muted small">Tracking ID:</span>
-                    <h1 class="h4 fw-bold font-monospace text-primary mb-1">{{ assignment.report.tracking_code }}</h1>
-                    <span class="badge bg-secondary">{{ assignment.report.waste_category }}</span>
+                    <div class="small text-secondary font-monospace mb-1">{{ report.tracking_code }}</div>
+                    <h1 class="h5 fw-bold text-dark mb-1">{{ report.title }}</h1>
+                    <span class="badge bg-light text-dark border">{{ report.waste_category }}</span>
                 </div>
-                <div class="text-end small text-muted">
-                    <div><strong>Assigned:</strong> {{ assignment.assignment_timestamp|format_datetime }}</div>
-                    {% if assignment.collection_timestamp %}
-                        <div class="text-success"><strong>Collected:</strong> {{ assignment.collection_timestamp|format_datetime }}</div>
+                <div class="text-end small text-secondary">
+                    <div><strong class="text-dark">Time Submitted:</strong> {{ report.submission_timestamp|format_datetime }}</div>
+                    {% if report.resolved_timestamp %}
+                        <div class="text-success"><strong>Marked {{ report.current_status }}:</strong> {{ report.resolved_timestamp|format_datetime }}</div>
                     {% endif %}
                 </div>
             </div>
 
-            <h2 class="h5 fw-bold text-dark mb-2">{{ assignment.report.title }}</h2>
-            <p class="text-muted mb-3">{{ assignment.report.description }}</p>
+            <p class="text-secondary small mb-3">{{ report.description }}</p>
 
             <div class="bg-light p-3 rounded-3 mb-3 border small">
                 <div class="mb-2">
-                    <strong><i class="bi bi-geo-alt-fill text-danger me-1"></i>Poblacion Address / Landmark:</strong><br>
-                    {{ assignment.report.location_description }}
+                    <strong class="text-dark"><i class="bi bi-geo-alt text-danger me-1"></i>Report Location in Poblacion, Minglanilla:</strong><br>
+                    <span class="text-secondary">{{ report.location_description }}</span>
                 </div>
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>
-                        <strong><i class="bi bi-crosshair text-primary me-1"></i>GIS Coordinates:</strong>
-                        <span class="font-monospace text-dark">{{ assignment.report.latitude }}, {{ assignment.report.longitude }}</span>
+                        <strong class="text-dark"><i class="bi bi-crosshair text-primary me-1"></i>GIS Coordinates:</strong>
+                        <span class="font-monospace text-dark">{{ report.latitude }}, {{ report.longitude }}</span>
                     </div>
-                    <a href="https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route={{ assignment.report.latitude }}%2C{{ assignment.report.longitude }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" style="font-size: 0.75rem;">
-                        <i class="bi bi-compass me-1"></i>OSM Directions
-                    </a>
+                    <div class="text-secondary">
+                        <strong class="text-dark">Reported by:</strong> {{ report.resident.full_name }}
+                    </div>
                 </div>
             </div>
 
-            <!-- Photos: Original Reported Waste vs Collector Proof Photo -->
+            <!-- Photos -->
             <div class="row g-3">
                 <div class="col-md-6">
-                    <div class="border rounded p-2 text-center bg-white h-100">
-                        <div class="small fw-bold text-muted mb-2">Original Waste Condition (Reported)</div>
-                        {% if assignment.report.photo_reference %}
-                            <img src="{{ url_for('static', filename='uploads/reports/' + assignment.report.photo_reference) }}" class="img-fluid rounded border" style="max-height: 220px; object-fit: cover;" alt="Reported Waste">
+                    <div class="border rounded-3 p-3 text-center bg-white h-100">
+                        <div class="small fw-semibold text-dark mb-2">Reported Bin Photo (Resident)</div>
+                        {% if report.photo_reference %}
+                            <img src="{{ url_for('static', filename='uploads/reports/' + report.photo_reference) }}" class="img-fluid rounded border" style="max-height: 210px; object-fit: cover;" alt="Reported Waste">
                         {% else %}
-                            <div class="text-muted small py-4 bg-light rounded">No photo uploaded with report.</div>
+                            <div class="text-secondary small py-4 bg-light rounded-3">No photo uploaded with report.</div>
                         {% endif %}
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="border rounded p-2 text-center bg-white h-100">
-                        <div class="small fw-bold text-success mb-2">My Uploaded Clearance Proof</div>
-                        {% if assignment.collection_proof_photo_reference %}
-                            <img src="{{ url_for('static', filename='uploads/proofs/' + assignment.collection_proof_photo_reference) }}" class="img-fluid rounded border" style="max-height: 220px; object-fit: cover;" alt="Collection Proof">
-                            {% if assignment.collection_notes %}
-                                <div class="small text-muted mt-2 text-start p-1 bg-light rounded">
-                                    <em>"{{ assignment.collection_notes }}"</em>
+                    <div class="border rounded-3 p-3 text-center bg-white h-100">
+                        <div class="small fw-semibold text-dark mb-2">Cleaned / Collected Photo (Optional)</div>
+                        {% if report.collection_proof_photo %}
+                            <img src="{{ url_for('static', filename='uploads/proofs/' + report.collection_proof_photo) }}" class="img-fluid rounded border" style="max-height: 210px; object-fit: cover;" alt="Cleaned or Collected Bin">
+                            {% if report.collection_notes %}
+                                <div class="small text-secondary mt-2 text-start p-2 bg-light rounded-3 border">
+                                    "{{ report.collection_notes }}"
                                 </div>
                             {% endif %}
                         {% else %}
-                            <div class="text-muted small py-4 bg-light rounded">
-                                <i class="bi bi-camera me-1"></i> Please upload proof photo upon completing collection below.
+                            <div class="text-secondary small py-4 bg-light rounded-3">
+                                Optional photo after cleaning or collection.
                             </div>
                         {% endif %}
                     </div>
@@ -91,85 +88,70 @@
 
         <!-- Interactive GIS Map -->
         <div class="eco-card p-4">
-            <h3 class="h6 fw-bold mb-2"><i class="bi bi-map-fill text-warning me-2"></i>Waste Location on Map</h3>
+            <h2 class="h6 fw-bold mb-2">Pinpointed Bin Location on GIS Map</h2>
             <div id="collectorTaskMap" class="eco-map-container map-sm"></div>
         </div>
     </div>
 
-    <!-- Right Column: Collection Action Form -->
+    <!-- Right Column: Mark Reported Bin as Cleaned or Collected -->
     <div class="col-lg-5">
-        <div class="eco-card p-4 border-top border-4 border-warning shadow-sm mb-4">
-            <h3 class="h5 fw-bold mb-3 border-bottom pb-2">
-                <i class="bi bi-check2-square text-warning me-2"></i>Update Collection Status
-            </h3>
+        <div class="eco-card p-4 mb-4">
+            <h2 class="h6 fw-bold mb-3 pb-2 border-bottom">
+                Update Report Status
+            </h2>
 
-            {% if assignment.task_status in ['Assigned', 'In Progress'] %}
-                <form method="POST" action="{{ url_for('personnel.task_detail', assignment_id=assignment.id) }}" enctype="multipart/form-data">
-                    {{ form.hidden_tag() }}
-
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold" for="taskActionSelect">Select Progress Action <span class="text-danger">*</span></label>
-                        {{ form.task_action(class="form-select", id="taskActionSelect") }}
-                        <div class="form-text small">
-                            Select <strong>In Progress</strong> when departing or starting cleanup. Select <strong>Collected</strong> only after the waste is completely removed.
-                        </div>
-                    </div>
-
-                    <div class="mb-3" id="proofPhotoSection">
-                        <label class="form-label small fw-semibold" for="proofPhotoInput">
-                            <i class="bi bi-camera-fill text-success me-1"></i>Upload Proof of Collection Photo
-                        </label>
-                        {{ form.proof_photo(class="form-control" + (" is-invalid" if form.proof_photo.errors else ""), id="proofPhotoInput", accept="image/*") }}
-                        <div class="form-text small">Take a clear photo showing the clean, cleared bin area (.jpg, .png, .webp).</div>
-                        {% for error in form.proof_photo.errors %}
-                            <div class="invalid-feedback">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label small fw-semibold" for="collectionNotesText">Collection Remarks / Note</label>
-                        {{ form.collection_notes(class="form-control", rows=3, placeholder="e.g. 3 large garbage bags loaded onto truck 4; bin area swept clean", id="collectionNotesText") }}
-                    </div>
-
-                    <button type="submit" class="btn btn-warning text-dark w-100 py-2 fw-bold shadow-sm">
-                        <i class="bi bi-arrow-up-circle-fill me-1"></i> Submit Status Update
-                    </button>
-                </form>
-            {% elif assignment.task_status == 'Collected' %}
-                <div class="p-3 bg-teal-subtle rounded-3 text-center border" style="background-color: #ccfbf1;">
-                    <i class="bi bi-hourglass-split fs-2 d-block mb-2 text-teal" style="color: #0d9488;"></i>
-                    <h4 class="h6 fw-bold" style="color: #0f766e;">Waste Collected — Awaiting Admin Review</h4>
-                    <p class="small text-muted mb-0">
-                        You have successfully marked this task as <strong>Collected</strong>. The administrator will review your clearance proof and officially confirm resolution.
-                    </p>
-                </div>
-            {% elif assignment.task_status == 'Completed' %}
-                <div class="p-3 bg-success-subtle rounded-3 text-center border border-success-subtle">
-                    <i class="bi bi-check-circle-fill fs-2 text-success d-block mb-2"></i>
-                    <h4 class="h6 fw-bold text-success">Task Fully Completed</h4>
-                    <p class="small text-muted mb-0">
-                        The administrator has reviewed and officially closed this collection report. Thank you for your service!
-                    </p>
+            {% if report.is_outstanding %}
+                <p class="small text-secondary mb-3">
+                    Mark this reported garbage bin as <strong>Collected</strong> or <strong>Cleaned</strong> once attended to. This updates the status on the shared GIS map for administrators and residents.
+                </p>
+            {% else %}
+                <div class="p-3 rounded-3 mb-3 small badge-status-completed">
+                    <i class="bi bi-check-circle-fill me-1"></i>
+                    Marked as <strong>{{ report.current_status }}</strong> by <strong>{{ report.resolved_by.full_name if report.resolved_by else 'Personnel' }}</strong>.
                 </div>
             {% endif %}
+
+            <form method="POST" action="{{ url_for('personnel.task_detail', report_id=report.id) }}" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    <label class="form-label" for="resolutionStatusSelect">{{ form.resolution_status.label.text }}</label>
+                    {{ form.resolution_status(class="form-select", id="resolutionStatusSelect") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="proofPhotoInput">{{ form.proof_photo.label.text }}</label>
+                    {{ form.proof_photo(class="form-control" + (" is-invalid" if form.proof_photo.errors else ""), id="proofPhotoInput", accept="image/*") }}
+                    {% for error in form.proof_photo.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="collectionNotesText">{{ form.collection_notes.label.text }}</label>
+                    {{ form.collection_notes(class="form-control", rows=3, placeholder="e.g. Garbage bin emptied and surrounding area cleaned.", id="collectionNotesText") }}
+                </div>
+
+                <button type="submit" class="btn btn-brand w-100 py-2">
+                    Confirm Status Update
+                </button>
+            </form>
         </div>
 
-        <!-- Report Status Trail -->
+        <!-- Status History -->
         <div class="eco-card p-4">
-            <h3 class="h6 fw-bold mb-3 border-bottom pb-2">
-                <i class="bi bi-clock-history text-muted me-2"></i>Activity History
-            </h3>
+            <h2 class="h6 fw-bold mb-3 pb-2 border-bottom">Status Update History</h2>
             <div class="eco-timeline">
-                {% for h in assignment.report.status_history %}
-                <div class="timeline-step {% if h.new_status == 'Completed' %}completed{% endif %}">
+                {% for h in report.status_history %}
+                <div class="timeline-step {% if h.new_status in ['Collected', 'Cleaned'] %}completed{% endif %}">
                     <div class="timeline-step-dot"></div>
                     <div class="d-flex justify-content-between align-items-baseline">
                         <span class="badge {{ h.new_status|status_badge_class }}">{{ h.new_status }}</span>
-                        <span class="text-muted" style="font-size: 0.72rem;">{{ h.timestamp|format_datetime }}</span>
+                        <span class="text-secondary" style="font-size: 0.72rem;">{{ h.timestamp|format_datetime }}</span>
                     </div>
                     <div class="small fw-semibold text-dark mt-1">{{ h.updated_by.full_name }} ({{ h.updated_by.role|capitalize }})</div>
                     {% if h.note %}
-                        <div class="small text-muted mt-1 p-2 bg-light rounded border">{{ h.note }}</div>
+                        <div class="small text-secondary mt-1 p-2 bg-light rounded-3 border">{{ h.note }}</div>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -182,27 +164,13 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const lat = {{ assignment.report.latitude }};
-        const lng = {{ assignment.report.longitude }};
-        const trackingCode = "{{ assignment.report.tracking_code }}";
-        const status = "{{ assignment.task_status }}";
-
-        EcoGIS.initDetailMap('collectorTaskMap', lat, lng, trackingCode, status);
-
-        // Highlight photo upload requirement when 'collected' is chosen
-        const actionSelect = document.getElementById('taskActionSelect');
-        const photoSection = document.getElementById('proofPhotoSection');
-        if (actionSelect && photoSection) {
-            function updatePhotoVisibility() {
-                if (actionSelect.value === 'collected') {
-                    photoSection.classList.add('border', 'border-success', 'p-2', 'rounded', 'bg-light');
-                } else {
-                    photoSection.classList.remove('border', 'border-success', 'p-2', 'rounded', 'bg-light');
-                }
-            }
-            actionSelect.addEventListener('change', updatePhotoVisibility);
-            updatePhotoVisibility();
-        }
+        EcoGIS.initDetailMap(
+            'collectorTaskMap',
+            {{ report.latitude }},
+            {{ report.longitude }},
+            "{{ report.tracking_code }}",
+            "{{ report.current_status }}"
+        );
     });
 </script>
 {% endblock %}

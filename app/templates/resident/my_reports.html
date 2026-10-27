@@ -1,83 +1,88 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Track Reports - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+{% block title %}My Submitted Waste Reports | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <div class="col-12">
         <div class="eco-card p-4">
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 border-bottom pb-3 gap-2">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-3 border-bottom gap-2">
                 <div>
-                    <h1 class="h4 fw-bold mb-1"><i class="bi bi-journal-text text-success me-2"></i>My Waste Reports</h1>
-                    <p class="text-muted small mb-0">Track and monitor your reported garbage bins in Barangay Poblacion, Minglanilla.</p>
+                    <h1 class="h4 fw-bold mb-1">My Submitted Waste Reports</h1>
+                    <p class="text-secondary small mb-0">
+                        Track your pinpointed garbage bin reports, submission timestamps, photos, and status updates.
+                    </p>
                 </div>
                 <div>
-                    <a href="{{ url_for('resident.new_report') }}" class="btn btn-warning text-dark fw-bold shadow-sm d-flex align-items-center gap-2">
-                        <i class="bi bi-plus-circle-fill fs-5"></i> <span>Report Full Bin</span>
+                    <a href="{{ url_for('resident.new_report') }}" class="btn btn-brand d-flex align-items-center gap-2">
+                        <i class="bi bi-plus-lg"></i> <span>Pinpoint Full Bin</span>
                     </a>
                 </div>
             </div>
 
             <!-- Filter Tabs -->
-            <ul class="nav nav-pills mb-3 small gap-1">
+            <ul class="nav nav-pills mb-3 gap-2">
                 <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'all' %}active bg-dark text-white fw-bold{% else %}text-dark bg-light border{% endif %}" href="{{ url_for('resident.my_reports', status='all') }}">All Reports</a>
+                    <a class="nav-link {% if current_filter == 'all' %}active bg-dark text-white{% else %}bg-light border{% endif %}" href="{{ url_for('resident.my_reports', status='all') }}">All Reports</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'active' %}active bg-warning text-dark fw-bold{% else %}text-dark bg-light border{% endif %}" href="{{ url_for('resident.my_reports', status='active') }}">Active / Collecting</a>
+                    <a class="nav-link {% if current_filter == 'outstanding' %}active bg-dark text-white{% else %}bg-light border{% endif %}" href="{{ url_for('resident.my_reports', status='outstanding') }}">Outstanding (Pending)</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'completed' %}active bg-success text-white fw-bold{% else %}text-dark bg-light border{% endif %}" href="{{ url_for('resident.my_reports', status='completed') }}">Completed</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'rejected' %}active bg-danger text-white fw-bold{% else %}text-dark bg-light border{% endif %}" href="{{ url_for('resident.my_reports', status='rejected') }}">Rejected</a>
+                    <a class="nav-link {% if current_filter == 'addressed' %}active bg-dark text-white{% else %}bg-light border{% endif %}" href="{{ url_for('resident.my_reports', status='addressed') }}">Addressed (Cleaned / Collected)</a>
                 </li>
             </ul>
 
             <!-- Table of Reports -->
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle">
+                    <thead>
                         <tr>
-                            <th>Status</th>
                             <th>Tracking ID</th>
-                            <th>Problem & Location</th>
-                            <th>Date Reported</th>
-                            <th>Action</th>
+                            <th>Reported Concern &amp; Location</th>
+                            <th>Photo</th>
+                            <th>Time Submitted</th>
+                            <th>Status</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for r in reports %}
                         <tr>
+                            <td class="font-monospace fw-semibold text-dark">{{ r.tracking_code }}</td>
                             <td>
-                                <span class="badge {{ r.current_status|status_badge_class }} fs-6">
-                                    {{ r.current_status }}
+                                <div class="fw-semibold text-dark">{{ r.title }}</div>
+                                <div class="small text-secondary"><i class="bi bi-geo-alt text-danger me-1"></i>{{ r.location_description }}</div>
+                            </td>
+                            <td>
+                                {% if r.photo_reference %}
+                                    <span class="badge bg-light text-dark border"><i class="bi bi-image text-success me-1"></i>Attached</span>
+                                {% else %}
+                                    <span class="text-secondary small">None</span>
+                                {% endif %}
+                            </td>
+                            <td class="small text-secondary">{{ r.submission_timestamp|format_datetime }}</td>
+                            <td>
+                                <span class="badge {{ r.current_status|status_badge_class }}">
+                                    {{ r.current_status }} ({{ r.monitoring_state_label }})
                                 </span>
                             </td>
-                            <td>
-                                <span class="fw-bold font-monospace text-primary fs-6">{{ r.tracking_code }}</span>
-                            </td>
-                            <td>
-                                <div class="fw-bold text-dark">{{ r.title }}</div>
-                                <div class="small text-muted"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ r.location_description }}</div>
-                            </td>
-                            <td class="small text-muted">
-                                {{ r.submission_timestamp|format_datetime }}
-                            </td>
-                            <td>
-                                <a href="{{ url_for('resident.track_report', report_id=r.id) }}" class="btn btn-sm btn-outline-success fw-bold px-3">
-                                    <i class="bi bi-search me-1"></i>Track Progress
+                            <td class="text-end">
+                                <a href="{{ url_for('resident.track_report', report_id=r.id) }}" class="btn btn-sm btn-outline-secondary">
+                                    View Details
                                 </a>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-5">
-                                <div class="fs-1 mb-2">🗑️</div>
-                                <h3 class="h6 fw-bold text-dark">No reports found</h3>
-                                <p class="small text-muted mb-3">You have no reports in this category.</p>
-                                <a href="{{ url_for('resident.new_report') }}" class="btn btn-sm btn-success fw-bold">
-                                    <i class="bi bi-plus-circle-fill me-1"></i>Submit New Report
+                            <td colspan="6" class="text-center py-5">
+                                <div class="kpi-icon-box slate mx-auto mb-2">
+                                    <i class="bi bi-inbox"></i>
+                                </div>
+                                <div class="fw-semibold text-dark">No reports found</div>
+                                <p class="small text-secondary mb-3">You have no reports matching this filter.</p>
+                                <a href="{{ url_for('resident.new_report') }}" class="btn btn-sm btn-brand">
+                                    Pinpoint Full Bin on Map
                                 </a>
                             </td>
                         </tr>

@@ -1,45 +1,40 @@
 {% extends "shared/base.html" %}
 
-{% block title %}Resident Registration - ECO TRACK | Poblacion, Minglanilla{% endblock %}
+{% block title %}Resident Registration | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center py-4">
-    <div class="col-md-7 col-lg-6">
-        <div class="eco-card p-4 p-md-5 shadow-sm">
+<div class="row justify-content-center py-3">
+    <div class="col-md-7 col-lg-6 col-xl-5">
+        <div class="eco-card p-4 p-md-5">
             <div class="text-center mb-4">
-                <div class="brand-icon mx-auto mb-2" style="width: 44px; height: 44px; font-size: 1.35rem;">
-                    <i class="bi bi-person-plus-fill"></i>
+                <div class="brand-icon mx-auto mb-3" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                    <i class="bi bi-person-plus"></i>
                 </div>
-                <h2 class="h4 fw-bold mb-1">Resident Registration</h2>
-                <p class="text-muted small">Barangay Poblacion (Wards 1–4), Minglanilla, Cebu</p>
-            </div>
-
-            <div class="alert alert-secondary py-2 small mb-4">
-                <i class="bi bi-info-circle-fill text-primary me-1"></i>
-                Registration is open to all residents of Barangay Poblacion, Minglanilla, Cebu to report and track municipal waste collection.
+                <h1 class="h4 fw-bold mb-1">Create Resident Account</h1>
+                <p class="text-secondary small mb-0">Barangay Poblacion, Minglanilla, Cebu</p>
             </div>
 
             <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
                 {{ form.hidden_tag() }}
 
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="full_name">{{ form.full_name.label.text }}</label>
+                    <label class="form-label" for="full_name">{{ form.full_name.label.text }}</label>
                     {{ form.full_name(class="form-control" + (" is-invalid" if form.full_name.errors else ""), placeholder="e.g. Juan Dela Cruz", id="full_name") }}
                     {% for error in form.full_name.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
-                <div class="row g-2 mb-3">
+                <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label class="form-label small fw-semibold" for="email">{{ form.email.label.text }}</label>
+                        <label class="form-label" for="email">{{ form.email.label.text }}</label>
                         {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="juan@example.com", id="email") }}
                         {% for error in form.email.errors %}
                             <div class="invalid-feedback">{{ error }}</div>
                         {% endfor %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label small fw-semibold" for="username">{{ form.username.label.text }}</label>
+                        <label class="form-label" for="username">{{ form.username.label.text }}</label>
                         {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="juandc", id="username") }}
                         {% for error in form.username.errors %}
                             <div class="invalid-feedback">{{ error }}</div>
@@ -48,23 +43,23 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="phone_number">{{ form.phone_number.label.text }}</label>
+                    <label class="form-label" for="phone_number">{{ form.phone_number.label.text }}</label>
                     {{ form.phone_number(class="form-control" + (" is-invalid" if form.phone_number.errors else ""), placeholder="0917-123-4567", id="phone_number") }}
                     {% for error in form.phone_number.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
-                <div class="row g-2 mb-4">
+                <div class="row g-3 mb-4">
                     <div class="col-md-6">
-                        <label class="form-label small fw-semibold" for="password">{{ form.password.label.text }}</label>
-                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="At least 6 characters", id="password") }}
+                        <label class="form-label" for="password">{{ form.password.label.text }}</label>
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Min. 6 characters", id="password") }}
                         {% for error in form.password.errors %}
                             <div class="invalid-feedback">{{ error }}</div>
                         {% endfor %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label small fw-semibold" for="confirm_password">{{ form.confirm_password.label.text }}</label>
+                        <label class="form-label" for="confirm_password">{{ form.confirm_password.label.text }}</label>
                         {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), placeholder="Repeat password", id="confirm_password") }}
                         {% for error in form.confirm_password.errors %}
                             <div class="invalid-feedback">{{ error }}</div>
@@ -72,14 +67,14 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">
-                    <i class="bi bi-check2-circle me-1"></i> Register Resident Account
+                <button type="submit" class="btn btn-brand w-100 py-2">
+                    Create Account
                 </button>
             </form>
 
-            <div class="text-center mt-4 pt-3 border-top small text-muted">
-                Already registered?
-                <a href="{{ url_for('auth.login') }}" class="fw-semibold text-success text-decoration-none">Sign in here</a>
+            <div class="text-center mt-4 pt-3 border-top small text-secondary">
+                Already have an account?
+                <a href="{{ url_for('auth.login') }}" class="fw-semibold text-success text-decoration-none">Sign in</a>
             </div>
         </div>
     </div>

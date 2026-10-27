@@ -10,7 +10,7 @@ csrf = CSRFProtect()
 
 
 def create_app(config_name=None):
-    """Application factory for ECO TRACK Waste Management System."""
+    """Application factory for A Proposed Waste Management System for Minglanilla, Cebu."""
     if config_name is None:
         config_name = os.environ.get('FLASK_ENV', 'development')
 
@@ -32,7 +32,7 @@ def create_app(config_name=None):
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        return db.session.get(User, int(user_id))
 
     # Register Blueprints
     from app.routes.main import main_bp
@@ -60,8 +60,8 @@ def create_app(config_name=None):
             ).count()
         return {
             'app_title': 'ECO TRACK',
-            'app_subtitle': 'GIS-Based Waste Management System',
-            'service_area_label': 'Poblacion, Minglanilla, Cebu',
+            'app_subtitle': 'Waste Management System for Minglanilla, Cebu',
+            'service_area_label': 'Minglanilla, Cebu (Poblacion Pilot Area)',
             'unread_notifications_count': unread_count
         }
 
@@ -82,12 +82,8 @@ def create_app(config_name=None):
     def status_badge_class(status):
         mapping = {
             'Pending': 'badge-status-pending',
-            'Verified': 'badge-status-verified',
-            'Assigned': 'badge-status-assigned',
-            'In Progress': 'badge-status-inprogress',
-            'Collected': 'badge-status-collected',
-            'Completed': 'badge-status-completed',
-            'Rejected': 'badge-status-rejected'
+            'Collected': 'badge-status-completed',
+            'Cleaned': 'badge-status-collected'
         }
         return mapping.get(status, 'badge-status-pending')
 

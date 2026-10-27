@@ -1,6 +1,6 @@
 import os
 from app import create_app
-from app.models import db, User, CollectionSchedule
+from app.models import db, User
 
 # Create application instance
 app = create_app(os.environ.get('FLASK_ENV', 'development'))
@@ -71,54 +71,12 @@ def ensure_initialized():
 
             db.session.commit()
 
-        # Seed baseline Poblacion schedules if empty
-        admin = User.query.filter_by(role='admin').first()
-        if admin and CollectionSchedule.query.count() == 0:
-            print("Seeding baseline Poblacion collection schedules...")
-            schedules = [
-                CollectionSchedule(
-                    service_area='Poblacion Ward 1 (Coastal Sector & Caballero St.)',
-                    collection_day='Monday & Thursday',
-                    collection_time='06:00 AM - 09:00 AM',
-                    waste_type='Biodegradable & Residual Waste',
-                    schedule_notes='Primary route covers Caballero St., public market perimeter, and coastal road.',
-                    created_by_user_id=admin.id
-                ),
-                CollectionSchedule(
-                    service_area='Poblacion Ward 2 (Central Market & Tulay Boundary)',
-                    collection_day='Tuesday & Friday',
-                    collection_time='06:00 AM - 09:00 AM',
-                    waste_type='Residual & Recyclable Waste',
-                    schedule_notes='Route covers Ward 2-Tulay Road and Minglanilla Central Elementary School surroundings.',
-                    created_by_user_id=admin.id
-                ),
-                CollectionSchedule(
-                    service_area='Poblacion Ward 3 (Town Plaza & Municipal Hall)',
-                    collection_day='Monday, Wednesday & Saturday',
-                    collection_time='05:30 AM - 08:30 AM',
-                    waste_type='Commercial & Biodegradable Waste',
-                    schedule_notes='Covers Municipal Hall, Plaza, Immaculate Heart of Mary Parish Church, and Villordon St.',
-                    created_by_user_id=admin.id
-                ),
-                CollectionSchedule(
-                    service_area='Poblacion Ward 4 (Highway Commercial Corridor)',
-                    collection_day='Daily (Monday to Sunday)',
-                    collection_time='08:00 PM - 11:00 PM',
-                    waste_type='Commercial & Residual Waste',
-                    schedule_notes='Night collection along Natalio Bacalso National Highway corridor in Poblacion.',
-                    created_by_user_id=admin.id
-                )
-            ]
-            db.session.add_all(schedules)
-            db.session.commit()
-
 
 if __name__ == '__main__':
     ensure_initialized()
     print("=" * 65)
-    print("  ECO TRACK: GIS-Based Waste Management System")
-    print("  Exclusively Serving Barangay Poblacion, Minglanilla, Cebu")
+    print("  A Proposed Waste Management System for Minglanilla, Cebu")
+    print("  Piloted in Barangay Poblacion, Minglanilla, Cebu")
     print("  Local PC:      http://127.0.0.1:5000")
-    print("  Mobile / LAN:  http://192.168.1.39:5000")
     print("=" * 65)
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,64 +1,64 @@
 {% extends "shared/base.html" %}
 
-{% block title %}User Account Management - Admin | ECO TRACK{% endblock %}
+{% block title %}User Accounts - Admin | Minglanilla Waste Management System{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <!-- Left: Add New Collection Personnel Form -->
     <div class="col-lg-4">
         <div class="eco-card p-4">
-            <h2 class="h5 fw-bold mb-3 border-bottom pb-2">
-                <i class="bi bi-person-plus-fill text-warning me-2"></i>Register Collection Personnel
+            <h2 class="h6 fw-bold mb-2 pb-2 border-bottom">
+                Register Collection Personnel
             </h2>
-            <p class="text-muted small mb-3">
-                Create an authorized field account for garbage collection personnel serving Poblacion routes.
+            <p class="text-secondary small mb-3">
+                Create an authorized account for garbage collection personnel operating in Minglanilla Poblacion.
             </p>
 
             <form method="POST" action="{{ url_for('admin.users') }}" novalidate>
                 {{ form.hidden_tag() }}
 
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="full_name">{{ form.full_name.label.text }}</label>
-                    {{ form.full_name(class="form-control form-control-sm" + (" is-invalid" if form.full_name.errors else ""), placeholder="e.g. Pedro Penduko", id="full_name") }}
+                    <label class="form-label" for="full_name">{{ form.full_name.label.text }}</label>
+                    {{ form.full_name(class="form-control" + (" is-invalid" if form.full_name.errors else ""), placeholder="e.g. Pedro Penduko", id="full_name") }}
                     {% for error in form.full_name.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="email">{{ form.email.label.text }}</label>
-                    {{ form.email(class="form-control form-control-sm" + (" is-invalid" if form.email.errors else ""), placeholder="collector@ecotrack.ph", id="email") }}
+                    <label class="form-label" for="email">{{ form.email.label.text }}</label>
+                    {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="collector@ecotrack.ph", id="email") }}
                     {% for error in form.email.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="username">{{ form.username.label.text }}</label>
-                    {{ form.username(class="form-control form-control-sm" + (" is-invalid" if form.username.errors else ""), placeholder="pedro_collector", id="username") }}
+                    <label class="form-label" for="username">{{ form.username.label.text }}</label>
+                    {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="pedro_collector", id="username") }}
                     {% for error in form.username.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-semibold" for="phone_number">{{ form.phone_number.label.text }}</label>
-                    {{ form.phone_number(class="form-control form-control-sm" + (" is-invalid" if form.phone_number.errors else ""), placeholder="0918-000-0000", id="phone_number") }}
+                    <label class="form-label" for="phone_number">{{ form.phone_number.label.text }}</label>
+                    {{ form.phone_number(class="form-control" + (" is-invalid" if form.phone_number.errors else ""), placeholder="0918-000-0000", id="phone_number") }}
                     {% for error in form.phone_number.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label small fw-semibold" for="password">{{ form.password.label.text }}</label>
-                    {{ form.password(class="form-control form-control-sm" + (" is-invalid" if form.password.errors else ""), placeholder="••••••••", id="password") }}
+                    <label class="form-label" for="password">{{ form.password.label.text }}</label>
+                    {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="••••••••", id="password") }}
                     {% for error in form.password.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
 
-                <button type="submit" class="btn btn-warning text-dark w-100 fw-bold shadow-sm">
-                    <i class="bi bi-person-check-fill me-1"></i> Register Personnel Account
+                <button type="submit" class="btn btn-brand w-100">
+                    Register Personnel Account
                 </button>
             </form>
         </div>
@@ -67,63 +67,63 @@
     <!-- Right: All Users Directory -->
     <div class="col-lg-8">
         <div class="eco-card p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
                 <div>
-                    <h1 class="h5 fw-bold mb-0"><i class="bi bi-people-fill text-primary me-2"></i>Registered System Accounts</h1>
-                    <div class="text-muted small">Manage residents, garbage collection personnel, and administrators.</div>
+                    <h1 class="h5 fw-bold mb-1">Registered System Accounts</h1>
+                    <div class="text-secondary small">Manage residents, garbage collection personnel, and administrators.</div>
                 </div>
-                <span class="badge bg-secondary">{{ users|length }} Total Accounts</span>
+                <span class="badge bg-light text-dark border px-3 py-2">{{ users|length }} Total Accounts</span>
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle">
+                    <thead>
                         <tr>
                             <th>User</th>
                             <th>Role</th>
                             <th>Contact</th>
                             <th>Status</th>
                             <th>Joined</th>
-                            <th>Action</th>
+                            <th class="text-end">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for u in users %}
                         <tr>
                             <td>
-                                <div class="fw-bold text-dark">{{ u.full_name }}</div>
-                                <div class="small text-muted">@{{ u.username }} &bull; {{ u.email }}</div>
+                                <div class="fw-semibold text-dark">{{ u.full_name }}</div>
+                                <div class="small text-secondary">@{{ u.username }} &bull; {{ u.email }}</div>
                             </td>
                             <td>
-                                <span class="badge {{ u.get_role_badge() }}">
+                                <span class="badge bg-light text-dark border">
                                     {{ u.role|capitalize }}
                                 </span>
                             </td>
-                            <td class="small">{{ u.phone_number or 'N/A' }}</td>
+                            <td class="small text-secondary">{{ u.phone_number or 'N/A' }}</td>
                             <td>
                                 {% if u.account_status == 'active' %}
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Active</span>
+                                    <span class="badge badge-status-completed">Active</span>
                                 {% else %}
-                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Suspended</span>
+                                    <span class="badge badge-status-rejected">Suspended</span>
                                 {% endif %}
                             </td>
-                            <td class="small text-muted">{{ u.created_at|format_date }}</td>
-                            <td>
+                            <td class="small text-secondary">{{ u.created_at|format_date }}</td>
+                            <td class="text-end">
                                 {% if u.id != current_user.id %}
                                     <form method="POST" action="{{ url_for('admin.toggle_user_status', user_id=u.id) }}" class="d-inline">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         {% if u.account_status == 'active' %}
-                                            <button type="submit" class="btn btn-xs btn-outline-danger py-0 px-2" style="font-size: 0.72rem;" onclick="return confirm('Suspend this user account?');">
+                                            <button type="submit" class="btn btn-xs btn-outline-secondary" onclick="return confirm('Suspend this user account?');">
                                                 Suspend
                                             </button>
                                         {% else %}
-                                            <button type="submit" class="btn btn-xs btn-outline-success py-0 px-2" style="font-size: 0.72rem;">
+                                            <button type="submit" class="btn btn-xs btn-brand">
                                                 Activate
                                             </button>
                                         {% endif %}
                                     </form>
                                 {% else %}
-                                    <span class="text-muted small">(Self)</span>
+                                    <span class="text-secondary small">Current</span>
                                 {% endif %}
                             </td>
                         </tr>
